@@ -1,0 +1,49 @@
+libzip (0.9.3-1) unstable; urgency=low
+
+  * New upstream release. (Closes: #567769)
+  * Drop patch to support archives with 64k entries - stolen upstream.
+  * Add libzip1 symbols file.
+  * Switch to dpkg-source 3.0 (quilt) format:
+    - drop quilt build dependency.
+  * Switch to dh:
+    - drop cdbs build dependency.
+    - bump debhelper build dependency version to 7.4.15.
+    - enable parallel build (pass --parallel option to dh).
+  * Bump Standards-Version to 3.8.4 (no changes needed).
+  * Update debian/copyright file:
+    - upstream contact e-mail, years and explicit GPL version.
+
+ -- Fathi Boudra <fabo@debian.org>  Wed, 24 Mar 2010 10:55:48 +0100
+
+libzip (0.9-3) unstable; urgency=low
+
+  * Add patch to support archives with 64k entries. (Closes: #536215)
+    Thanks to Dieter Baron.
+
+ -- Fathi Boudra <fabo@debian.org>  Tue, 28 Jul 2009 22:21:37 +0200
+
+libzip (0.9-2) unstable; urgency=low
+
+  * Fix shlibs. (Closes: #537954)
+
+ -- Fathi Boudra <fabo@debian.org>  Sat, 25 Jul 2009 11:47:15 +0200
+
+libzip (0.9-1) unstable; urgency=low
+
+  * New upstream release (Closes: #537349)
+
+  [ Fathi Boudra ]
+  * Add ziptorrent package.
+
+  [ Matthew Rosewarne ]
+  * Update debian/control: add Homepage field.
+  * Add watch file.
+
+ -- Fathi Boudra <fabo@debian.org>  Fri, 17 Jul 2009 15:01:02 +0200
+
+libzip (0.8-1) unstable; urgency=low
+
+  * Initial release. (Closes: #446583)
+
+ -- Fathi Boudra <fboudra@free.fr>  Sun, 14 Oct 2007 09:20:12 +0200
+

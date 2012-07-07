@@ -4,6 +4,4 @@
 #export DH_VERBOSE=1
 
 %:
-	dh --parallel --list-missing $@
-
-.PHONY: override_dh_auto_test
+	dh $@ --parallel --list-missing --with autoreconf

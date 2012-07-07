@@ -36,10 +36,11 @@ build_triplet = @build@
 host_triplet = @host@
 noinst_PROGRAMS = add_dir$(EXEEXT) add_from_buffer$(EXEEXT) \
 	add_from_file$(EXEEXT) add_from_filep$(EXEEXT) \
-	encrypt$(EXEEXT) fread$(EXEEXT) get_comment$(EXEEXT) \
-	open$(EXEEXT) name_locate$(EXEEXT) set_comment_all$(EXEEXT) \
-	set_comment_localonly$(EXEEXT) \
-	set_comment_removeglobal$(EXEEXT) set_comment_revert$(EXEEXT)
+	add_from_zip$(EXEEXT) encrypt$(EXEEXT) fread$(EXEEXT) \
+	get_comment$(EXEEXT) name_locate$(EXEEXT) \
+	set_comment_all$(EXEEXT) set_comment_localonly$(EXEEXT) \
+	set_comment_removeglobal$(EXEEXT) set_comment_revert$(EXEEXT) \
+	tryopen$(EXEEXT)
 EXTRA_PROGRAMS = deltest$(EXEEXT) ziptest$(EXEEXT)
 subdir = regress
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
@@ -71,6 +72,10 @@ add_from_filep_SOURCES = add_from_filep.c
 add_from_filep_OBJECTS = add_from_filep.$(OBJEXT)
 add_from_filep_LDADD = $(LDADD)
 add_from_filep_DEPENDENCIES = ${top_builddir}/lib/libzip.la
+add_from_zip_SOURCES = add_from_zip.c
+add_from_zip_OBJECTS = add_from_zip.$(OBJEXT)
+add_from_zip_LDADD = $(LDADD)
+add_from_zip_DEPENDENCIES = ${top_builddir}/lib/libzip.la
 deltest_SOURCES = deltest.c
 deltest_OBJECTS = deltest.$(OBJEXT)
 deltest_LDADD = $(LDADD)
@@ -91,10 +96,6 @@ name_locate_SOURCES = name_locate.c
 name_locate_OBJECTS = name_locate.$(OBJEXT)
 name_locate_LDADD = $(LDADD)
 name_locate_DEPENDENCIES = ${top_builddir}/lib/libzip.la
-open_SOURCES = open.c
-open_OBJECTS = open.$(OBJEXT)
-open_LDADD = $(LDADD)
-open_DEPENDENCIES = ${top_builddir}/lib/libzip.la
 set_comment_all_SOURCES = set_comment_all.c
 set_comment_all_OBJECTS = set_comment_all.$(OBJEXT)
 set_comment_all_LDADD = $(LDADD)
@@ -111,6 +112,10 @@ set_comment_revert_SOURCES = set_comment_revert.c
 set_comment_revert_OBJECTS = set_comment_revert.$(OBJEXT)
 set_comment_revert_LDADD = $(LDADD)
 set_comment_revert_DEPENDENCIES = ${top_builddir}/lib/libzip.la
+tryopen_SOURCES = tryopen.c
+tryopen_OBJECTS = tryopen.$(OBJEXT)
+tryopen_LDADD = $(LDADD)
+tryopen_DEPENDENCIES = ${top_builddir}/lib/libzip.la
 ziptest_SOURCES = ziptest.c
 ziptest_OBJECTS = ziptest.$(OBJEXT)
 ziptest_LDADD = $(LDADD)
@@ -129,13 +134,15 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = add_dir.c add_from_buffer.c add_from_file.c add_from_filep.c \
-	deltest.c encrypt.c fread.c get_comment.c name_locate.c open.c \
-	set_comment_all.c set_comment_localonly.c \
-	set_comment_removeglobal.c set_comment_revert.c ziptest.c
+	add_from_zip.c deltest.c encrypt.c fread.c get_comment.c \
+	name_locate.c set_comment_all.c set_comment_localonly.c \
+	set_comment_removeglobal.c set_comment_revert.c tryopen.c \
+	ziptest.c
 DIST_SOURCES = add_dir.c add_from_buffer.c add_from_file.c \
-	add_from_filep.c deltest.c encrypt.c fread.c get_comment.c \
-	name_locate.c open.c set_comment_all.c set_comment_localonly.c \
-	set_comment_removeglobal.c set_comment_revert.c ziptest.c
+	add_from_filep.c add_from_zip.c deltest.c encrypt.c fread.c \
+	get_comment.c name_locate.c set_comment_all.c \
+	set_comment_localonly.c set_comment_removeglobal.c \
+	set_comment_revert.c tryopen.c ziptest.c
 ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
@@ -259,6 +266,7 @@ EXTRA_DIST = \
 	${TESTS} \
 	broken.zip \
 	encrypt.zip \
+	manyfiles.zip \
 	test.zip \
 	testbuffer.zip \
 	testdir.zip \
@@ -269,6 +277,7 @@ EXTRA_DIST = \
 	testfile.txt \
 	testfile.zip \
 	testnottorrent.zip \
+	teststored.zip \
 	testtorrent.tzip
 
 TESTS_ENVIRONMENT = ZIPCMP=${top_builddir}/src/zipcmp ${srcdir}/runtest
@@ -277,17 +286,27 @@ TESTS = \
 	add_from_buffer.test \
 	add_from_file.test \
 	add_from_filep.test \
+	add_from_zip.test \
 	encrypt.test \
 	fread.test \
 	get_comment.test \
 	name_locate.test \
-	open.test \
+	open_many_ok.test \
+	open_new_but_exists.test \
+	open_new_ok.test \
+	open_nonarchive.test \
+	open_nosuchfile.test \
+	open_ok.test \
 	set_comment_all.test \
 	set_comment_localonly.test \
 	set_comment_removeglobal.test \
 	set_comment_revert.test \
 	torrent-already.test \
 	torrent-new.test
+
+# problems with comparing stderr output
+NOTYET = \
+	add_from_file_duplicate.test
 
 AM_CPPFLAGS = -I${top_srcdir}/lib
 LDADD = ${top_builddir}/lib/libzip.la
@@ -346,6 +365,9 @@ add_from_file$(EXEEXT): $(add_from_file_OBJECTS) $(add_from_file_DEPENDENCIES)
 add_from_filep$(EXEEXT): $(add_from_filep_OBJECTS) $(add_from_filep_DEPENDENCIES) 
 	@rm -f add_from_filep$(EXEEXT)
 	$(LINK) $(add_from_filep_OBJECTS) $(add_from_filep_LDADD) $(LIBS)
+add_from_zip$(EXEEXT): $(add_from_zip_OBJECTS) $(add_from_zip_DEPENDENCIES) 
+	@rm -f add_from_zip$(EXEEXT)
+	$(LINK) $(add_from_zip_OBJECTS) $(add_from_zip_LDADD) $(LIBS)
 deltest$(EXEEXT): $(deltest_OBJECTS) $(deltest_DEPENDENCIES) 
 	@rm -f deltest$(EXEEXT)
 	$(LINK) $(deltest_OBJECTS) $(deltest_LDADD) $(LIBS)
@@ -361,9 +383,6 @@ get_comment$(EXEEXT): $(get_comment_OBJECTS) $(get_comment_DEPENDENCIES)
 name_locate$(EXEEXT): $(name_locate_OBJECTS) $(name_locate_DEPENDENCIES) 
 	@rm -f name_locate$(EXEEXT)
 	$(LINK) $(name_locate_OBJECTS) $(name_locate_LDADD) $(LIBS)
-open$(EXEEXT): $(open_OBJECTS) $(open_DEPENDENCIES) 
-	@rm -f open$(EXEEXT)
-	$(LINK) $(open_OBJECTS) $(open_LDADD) $(LIBS)
 set_comment_all$(EXEEXT): $(set_comment_all_OBJECTS) $(set_comment_all_DEPENDENCIES) 
 	@rm -f set_comment_all$(EXEEXT)
 	$(LINK) $(set_comment_all_OBJECTS) $(set_comment_all_LDADD) $(LIBS)
@@ -376,6 +395,9 @@ set_comment_removeglobal$(EXEEXT): $(set_comment_removeglobal_OBJECTS) $(set_com
 set_comment_revert$(EXEEXT): $(set_comment_revert_OBJECTS) $(set_comment_revert_DEPENDENCIES) 
 	@rm -f set_comment_revert$(EXEEXT)
 	$(LINK) $(set_comment_revert_OBJECTS) $(set_comment_revert_LDADD) $(LIBS)
+tryopen$(EXEEXT): $(tryopen_OBJECTS) $(tryopen_DEPENDENCIES) 
+	@rm -f tryopen$(EXEEXT)
+	$(LINK) $(tryopen_OBJECTS) $(tryopen_LDADD) $(LIBS)
 ziptest$(EXEEXT): $(ziptest_OBJECTS) $(ziptest_DEPENDENCIES) 
 	@rm -f ziptest$(EXEEXT)
 	$(LINK) $(ziptest_OBJECTS) $(ziptest_LDADD) $(LIBS)
@@ -390,16 +412,17 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/add_from_buffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/add_from_file.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/add_from_filep.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/add_from_zip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deltest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/encrypt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/get_comment.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/name_locate.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/open.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set_comment_all.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set_comment_localonly.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set_comment_removeglobal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set_comment_revert.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tryopen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ziptest.Po@am__quote@
 
 .c.o:

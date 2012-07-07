@@ -36,8 +36,9 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = lib
-DIST_COMMON = $(include_HEADERS) $(noinst_HEADERS) \
-	$(srcdir)/Makefile.am $(srcdir)/Makefile.in mkstemp.c
+DIST_COMMON = $(include_HEADERS) $(libinclude_HEADERS) \
+	$(noinst_HEADERS) $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	mkstemp.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
@@ -70,7 +71,8 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)" \
+	"$(DESTDIR)$(libincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libzip_la_DEPENDENCIES = @LTLIBOBJS@
 am_libzip_la_OBJECTS = zip_add.lo zip_add_dir.lo zip_close.lo \
@@ -78,20 +80,28 @@ am_libzip_la_OBJECTS = zip_add.lo zip_add_dir.lo zip_close.lo \
 	zip_err_str.lo zip_error.lo zip_error_clear.lo \
 	zip_error_get.lo zip_error_get_sys_type.lo \
 	zip_error_strerror.lo zip_error_to_str.lo zip_fclose.lo \
-	zip_file_error_clear.lo zip_file_error_get.lo \
+	zip_fdopen.lo zip_file_error_clear.lo zip_file_error_get.lo \
 	zip_file_get_offset.lo zip_file_strerror.lo \
-	zip_filerange_crc.lo zip_fopen.lo zip_fopen_index.lo \
-	zip_fread.lo zip_free.lo zip_get_archive_comment.lo \
-	zip_get_archive_flag.lo zip_get_file_comment.lo \
+	zip_filerange_crc.lo zip_fopen.lo zip_fopen_encrypted.lo \
+	zip_fopen_index.lo zip_fopen_index_encrypted.lo zip_fread.lo \
+	zip_free.lo zip_get_archive_comment.lo zip_get_archive_flag.lo \
+	zip_get_compression_implementation.lo \
+	zip_get_encryption_implementation.lo zip_get_file_comment.lo \
+	zip_get_file_extra.lo zip_get_num_entries.lo \
 	zip_get_num_files.lo zip_get_name.lo zip_memdup.lo \
 	zip_name_locate.lo zip_new.lo zip_open.lo zip_rename.lo \
 	zip_replace.lo zip_set_archive_comment.lo \
-	zip_set_archive_flag.lo zip_set_file_comment.lo \
-	zip_source_buffer.lo zip_source_file.lo zip_source_filep.lo \
-	zip_source_free.lo zip_source_function.lo zip_source_zip.lo \
-	zip_set_name.lo zip_stat.lo zip_stat_index.lo zip_stat_init.lo \
-	zip_strerror.lo zip_unchange.lo zip_unchange_all.lo \
-	zip_unchange_archive.lo zip_unchange_data.lo
+	zip_set_archive_flag.lo zip_set_default_password.lo \
+	zip_set_file_comment.lo zip_set_file_extra.lo \
+	zip_source_buffer.lo zip_source_close.lo zip_source_crc.lo \
+	zip_source_deflate.lo zip_source_error.lo zip_source_file.lo \
+	zip_source_filep.lo zip_source_free.lo zip_source_function.lo \
+	zip_source_layered.lo zip_source_open.lo zip_source_pkware.lo \
+	zip_source_pop.lo zip_source_read.lo zip_source_stat.lo \
+	zip_source_zip.lo zip_set_name.lo zip_stat.lo \
+	zip_stat_index.lo zip_stat_init.lo zip_strerror.lo \
+	zip_unchange.lo zip_unchange_all.lo zip_unchange_archive.lo \
+	zip_unchange_data.lo
 libzip_la_OBJECTS = $(am_libzip_la_OBJECTS)
 libzip_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -111,7 +121,7 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libzip_la_SOURCES)
 DIST_SOURCES = $(libzip_la_SOURCES)
-HEADERS = $(include_HEADERS) $(noinst_HEADERS)
+HEADERS = $(include_HEADERS) $(libinclude_HEADERS) $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -227,10 +237,14 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+libincludedir = ${libdir}/@PACKAGE@/include
 lib_LTLIBRARIES = libzip.la
 noinst_HEADERS = zipint.h
 include_HEADERS = zip.h
-libzip_la_LDFLAGS = -no-undefined -version-info 1:0
+libinclude_HEADERS = zipconf.h
+
+# also update CMakeLists.txt when changing version
+libzip_la_LDFLAGS = -no-undefined -version-info 3:0:1
 libzip_la_LIBADD = @LTLIBOBJS@
 libzip_la_SOURCES = \
 	zip_add.c \
@@ -248,18 +262,25 @@ libzip_la_SOURCES = \
 	zip_error_strerror.c \
 	zip_error_to_str.c \
 	zip_fclose.c \
+	zip_fdopen.c \
 	zip_file_error_clear.c \
 	zip_file_error_get.c \
 	zip_file_get_offset.c \
 	zip_file_strerror.c \
 	zip_filerange_crc.c \
 	zip_fopen.c \
+	zip_fopen_encrypted.c \
 	zip_fopen_index.c \
+	zip_fopen_index_encrypted.c \
 	zip_fread.c \
 	zip_free.c \
 	zip_get_archive_comment.c \
 	zip_get_archive_flag.c \
+	zip_get_compression_implementation.c \
+	zip_get_encryption_implementation.c \
 	zip_get_file_comment.c \
+	zip_get_file_extra.c \
+	zip_get_num_entries.c \
 	zip_get_num_files.c \
 	zip_get_name.c \
 	zip_memdup.c \
@@ -270,12 +291,24 @@ libzip_la_SOURCES = \
 	zip_replace.c \
 	zip_set_archive_comment.c \
 	zip_set_archive_flag.c \
+	zip_set_default_password.c \
 	zip_set_file_comment.c \
+	zip_set_file_extra.c \
 	zip_source_buffer.c \
+	zip_source_close.c \
+	zip_source_crc.c \
+	zip_source_deflate.c \
+	zip_source_error.c \
 	zip_source_file.c \
 	zip_source_filep.c \
 	zip_source_free.c \
 	zip_source_function.c \
+	zip_source_layered.c \
+	zip_source_open.c \
+	zip_source_pkware.c \
+	zip_source_pop.c \
+	zip_source_read.c \
+	zip_source_stat.c \
 	zip_source_zip.c \
 	zip_set_name.c \
 	zip_stat.c \
@@ -287,9 +320,11 @@ libzip_la_SOURCES = \
 	zip_unchange_archive.c \
 	zip_unchange_data.c
 
-BUILT_SOURCES = zip_err_str.c
+BUILT_SOURCES = zip_err_str.c zipconf.h
+CLEANFILES = ${BUILT_SOURCES}
 EXTRA_DIST = CMakeLists.txt \
-		make_zip_err_str.sh
+		make_zip_err_str.sh \
+		make_zipconf.sh
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -382,19 +417,26 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_error_strerror.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_error_to_str.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_fclose.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_fdopen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_file_error_clear.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_file_error_get.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_file_get_offset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_file_strerror.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_filerange_crc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_fopen.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_fopen_encrypted.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_fopen_index.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_fopen_index_encrypted.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_fread.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_free.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_get_archive_comment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_get_archive_flag.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_get_compression_implementation.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_get_encryption_implementation.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_get_file_comment.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_get_file_extra.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_get_name.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_get_num_entries.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_get_num_files.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_memdup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_name_locate.Plo@am__quote@
@@ -404,13 +446,25 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_replace.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_set_archive_comment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_set_archive_flag.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_set_default_password.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_set_file_comment.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_set_file_extra.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_set_name.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_buffer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_close.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_crc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_deflate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_file.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_filep.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_free.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_function.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_layered.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_open.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_pkware.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_pop.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_read.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_stat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_source_zip.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_stat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zip_stat_index.Plo@am__quote@
@@ -467,6 +521,26 @@ uninstall-includeHEADERS:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(includedir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(includedir)" && rm -f $$files
+install-libincludeHEADERS: $(libinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(libincludedir)" || $(MKDIR_P) "$(DESTDIR)$(libincludedir)"
+	@list='$(libinclude_HEADERS)'; test -n "$(libincludedir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libincludedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libincludedir)" || exit $$?; \
+	done
+
+uninstall-libincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(libinclude_HEADERS)'; test -n "$(libincludedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(libincludedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(libincludedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -555,7 +629,7 @@ check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(libincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -576,6 +650,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -608,7 +683,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-includeHEADERS
+install-data-am: install-includeHEADERS install-libincludeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -654,7 +729,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES
+uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES \
+	uninstall-libincludeHEADERS
 
 .MAKE: all check install install-am install-strip
 
@@ -665,17 +741,21 @@ uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-includeHEADERS install-info \
-	install-info-am install-libLTLIBRARIES install-man install-pdf \
+	install-info-am install-libLTLIBRARIES \
+	install-libincludeHEADERS install-man install-pdf \
 	install-pdf-am install-ps install-ps-am install-strip \
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-includeHEADERS \
-	uninstall-libLTLIBRARIES
+	uninstall-libLTLIBRARIES uninstall-libincludeHEADERS
 
 
 zip_err_str.c: zip.h make_zip_err_str.sh
 	sh $(srcdir)/make_zip_err_str.sh $(srcdir)/zip.h zip_err_str.c
+
+zipconf.h: ${top_builddir}/config.h make_zipconf.sh
+	sh ${srcdir}/make_zipconf.sh ${top_builddir}/config.h zipconf.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

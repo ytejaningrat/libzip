@@ -1,3 +1,37 @@
+libzip (0.10.1-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Re-enable tests
+  * Fix broken decrypt on amd64 (Closes: 665225).
+
+ -- Luk Claes <luk@debian.org>  Sat, 07 Jul 2012 02:03:46 +0000
+
+libzip (0.10.1-1) unstable; urgency=low
+
+  * New upstream release: fix CVE-2012-1162 and CVE-2012-1163
+    Incorrect loop construct and numeric overflow. (Closes: #664990, #665957)
+
+ -- Fathi Boudra <fabo@debian.org>  Mon, 21 May 2012 15:16:11 +0300
+
+libzip (0.10-1) unstable; urgency=low
+
+  * New upstream release. (Closes: #647131)
+  * Add patches:
+    - fix_open_nonarchive_test.patch
+    - fix_zipconf_path.patch
+  * Update debian/compat: bump to 8.
+  * Update debian/rules:
+    - build depends on dh-autoreconf.
+    - bump debhelper build dependency to 8.0.0.
+    - bump Standards-Version to 3.9.0 - no changes needed.
+    - rename libzip1 to libzip2 (bump soname).
+  * Update debian/rules:
+    - use dh with autoreconf.
+    - drop override_dh_auto_test.
+  * Update debian/*.install files.
+
+ -- Fathi Boudra <fabo@debian.org>  Sat, 31 Dec 2011 14:39:13 +0200
+
 libzip (0.9.3-1) unstable; urgency=low
 
   * New upstream release. (Closes: #567769)

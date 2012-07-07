@@ -1,15 +1,15 @@
 Source: libzip
 Priority: optional
 Maintainer: Fathi Boudra <fabo@debian.org>
-Build-Depends: debhelper (>= 7.4.15), autotools-dev, zlib1g-dev
-Standards-Version: 3.8.4
+Build-Depends: debhelper (>= 8), dh-autoreconf, zlib1g-dev
+Standards-Version: 3.9.3
 Section: libs
 Homepage: http://www.nih.at/libzip/
 
 Package: libzip-dev
 Section: libdevel
 Architecture: any
-Depends: libzip1 (= ${binary:Version}), ${misc:Depends}, zlib1g-dev
+Depends: libzip2 (= ${binary:Version}), zlib1g-dev, ${misc:Depends}
 Description: library for reading, creating, and modifying zip archives (development)
  libzip is a C library for reading, creating, and modifying zip archives. Files
  can be added from data buffers, files, or compressed data copied directly from
@@ -18,9 +18,9 @@ Description: library for reading, creating, and modifying zip archives (developm
  This package contains the static libraries and headers for developing
  applications that use the libzip library API.
 
-Package: libzip1
+Package: libzip2
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: library for reading, creating, and modifying zip archives (runtime)
  libzip is a C library for reading, creating, and modifying zip archives. Files
  can be added from data buffers, files, or compressed data copied directly from
@@ -32,7 +32,7 @@ Description: library for reading, creating, and modifying zip archives (runtime)
 Package: zipcmp
 Section: utils
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: compare contents of zip archives
  zipcmp compares two zip archives and checks if they contain the same files,
  comparing their names, uncompressed sizes, and CRCs. File order and compressed
@@ -41,7 +41,7 @@ Description: compare contents of zip archives
 Package: zipmerge
 Section: utils
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: merge zip archives
  zipmerge merges a source zip archives into a target zip archive.
  By default, files in the source zip archives overwrite existing files of the
@@ -50,7 +50,7 @@ Description: merge zip archives
 Package: ziptorrent
 Section: utils
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: torrentzip zip archives
  ziptorrent torrentzips archive. This is a restricted file format used for
  using bittorrent on zip files.

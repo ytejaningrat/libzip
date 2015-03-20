@@ -1,3 +1,1 @@
-fix_open_nonarchive_test.patch
-fix_zipconf_path.patch
-fix_broken_decrypt.patch
+CVE-2015-2331.patch

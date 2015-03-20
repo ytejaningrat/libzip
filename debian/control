@@ -1,8 +1,8 @@
 Source: libzip
 Priority: optional
 Maintainer: Fathi Boudra <fabo@debian.org>
-Build-Depends: debhelper (>= 8), dh-autoreconf, zlib1g-dev
-Standards-Version: 3.9.3
+Build-Depends: debhelper (>= 9), dh-autoreconf, unzip, zlib1g-dev
+Standards-Version: 3.9.5
 Section: libs
 Homepage: http://www.nih.at/libzip/
 

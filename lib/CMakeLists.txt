@@ -55,11 +55,13 @@ ENDMACRO(CREATE_LIBTOOL_FILE)
 SET(LIBZIP_SOURCES
   zip_add.c
   zip_add_dir.c
+  zip_add_entry.c
   zip_close.c
   zip_delete.c
+  zip_dir_add.c
   zip_dirent.c
-  zip_entry_free.c
-  zip_entry_new.c
+  zip_discard.c
+  zip_entry.c
   zip_err_str.c
   zip_error.c
   zip_error_clear.c
@@ -67,11 +69,20 @@ SET(LIBZIP_SOURCES
   zip_error_get_sys_type.c
   zip_error_strerror.c
   zip_error_to_str.c
+  zip_extra_field.c
+  zip_extra_field_api.c
   zip_fclose.c
   zip_fdopen.c
+  zip_file_add.c
   zip_file_error_clear.c
   zip_file_error_get.c
+  zip_file_get_comment.c
+  zip_file_get_external_attributes.c
   zip_file_get_offset.c
+  zip_file_rename.c
+  zip_file_replace.c
+  zip_file_set_comment.c
+  zip_file_set_external_attributes.c
   zip_file_strerror.c
   zip_filerange_crc.c
   zip_fopen.c
@@ -79,14 +90,13 @@ SET(LIBZIP_SOURCES
   zip_fopen_index.c
   zip_fopen_index_encrypted.c
   zip_fread.c
-  zip_free.c
   zip_get_archive_comment.c
   zip_get_archive_flag.c
   zip_get_compression_implementation.c
   zip_get_encryption_implementation.c
   zip_get_file_comment.c
-  zip_get_file_extra.c
   zip_get_name.c
+  zip_get_num_entries.c
   zip_get_num_files.c
   zip_memdup.c
   zip_name_locate.c
@@ -98,7 +108,7 @@ SET(LIBZIP_SOURCES
   zip_set_archive_flag.c
   zip_set_default_password.c
   zip_set_file_comment.c
-  zip_set_file_extra.c
+  zip_set_file_compression.c
   zip_set_name.c
   zip_source_buffer.c
   zip_source_close.c
@@ -115,21 +125,25 @@ SET(LIBZIP_SOURCES
   zip_source_pop.c
   zip_source_read.c
   zip_source_stat.c
+  zip_source_window.c
   zip_source_zip.c
+  zip_source_zip_new.c
   zip_stat.c
   zip_stat_index.c
   zip_stat_init.c
   zip_strerror.c
+  zip_string.c
   zip_unchange.c
   zip_unchange_all.c
   zip_unchange_archive.c
   zip_unchange_data.c
+  zip_utf-8.c
 )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/..)
 
-# XXX: distribute instead?
+# TODO: distribute instead?
 #ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/zip_err_str.c
 #  COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/make_zip_err_str.sh
 #    ${CMAKE_CURRENT_SOURCE_DIR}/zip.h

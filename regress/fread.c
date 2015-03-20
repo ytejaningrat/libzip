@@ -32,10 +32,18 @@
 */
 
 
+#include "config.h"
 
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#ifndef HAVE_GETOPT
+#include "getopt.h"
+#endif
 
 #include "zip.h"
 
@@ -47,35 +55,52 @@ const char *when_name[] = {
     "no", "zip_fopen", "zip_fread", "zip_fclose"
 };
 
-int do_read(struct zip *, const char *, int, enum when, int, int);
+static int do_read(struct zip *, const char *, int, enum when, int, int);
 
 
+int verbose;
 
 const char *prg;
+const char * const usage = "usage: %s [-v] archive\n";
 
 int
 main(int argc, char *argv[])
 {
     int fail, ze;
+    int c;
     struct zip *z;
     struct zip_source *zs;
     char *archive;
     char errstr[1024];
 
+    verbose = 0;
     fail = 0;
 
     prg = argv[0];
 
-    if (argc != 2) {
-        fprintf(stderr, "usage: %s archive\n", prg);
+    while ((c=getopt(argc, argv, "v")) != -1) {
+	switch (c) {
+            case 'v':
+                verbose = 1;
+                break;
+
+            default:
+                fprintf(stderr, usage, prg);
+                return 1;
+	}
+    }
+
+    
+    if (argc-optind != 1) {
+        fprintf(stderr, usage, prg);
         return 1;
     }
 
-    archive = argv[1];
+    archive = argv[optind];
 
     if ((z=zip_open(archive, 0, &ze)) == NULL) {
 	zip_error_to_str(errstr, sizeof(errstr), ze, errno);
-	printf("%s: opening zip archive ``%s'' failed: %s\n",
+	printf("%s: can't open zip archive '%s': %s\n",
 	       prg, archive, errstr);
 	return 1;
     }
@@ -108,12 +133,13 @@ main(int argc, char *argv[])
     fail += do_read(z, "storedok", 0, WHEN_OPEN, ZIP_ER_NOENT, 0);
     fail += do_read(z, "storedok", ZIP_FL_UNCHANGED, WHEN_NEVER, 0, 0);
     zs = zip_source_buffer(z, "asdf", 4, 0);
-    zip_add(z, "new_file", zs);
+    if (zip_file_add(z, "new_file", zs, 0) < 0)
+        fprintf(stderr, "%s: can't add file to zip archive '%s': %s\n", prg, archive, zip_strerror(z));
     fail += do_read(z, "new_file", 0, WHEN_OPEN, ZIP_ER_CHANGED, 0);
     zip_unchange_all(z);
 
     if (zip_close(z) == -1) {
-        fprintf(stderr, "%s: can't close zip archive `%s'\n", prg, archive);
+        fprintf(stderr, "%s: can't close zip archive '%s': %s\n", prg, archive, zip_strerror(z));
         return 1;
     }
 
@@ -122,15 +148,15 @@ main(int argc, char *argv[])
 
 
 
-int
+static int
 do_read(struct zip *z, const char *name, int flags,
 	enum when when_ex, int ze_ex, int se_ex)
 {
     struct zip_file *zf;
     enum when when_got;
-    int ze_got, se_got;
+    int err, ze_got, se_got;
     char b[8192];
-    int n;
+    zip_int64_t n;
     char expected[80];
     char got[80];
 
@@ -148,10 +174,10 @@ do_read(struct zip *z, const char *name, int flags,
 	    when_got = WHEN_READ;
 	    zip_file_error_get(zf, &ze_got, &se_got);
 	}
-	n = zip_fclose(zf);
-	if (when_got == WHEN_NEVER && n != 0) {
+	err = zip_fclose(zf);
+	if (when_got == WHEN_NEVER && err != 0) {
 	    when_got = WHEN_CLOSE;
-	    ze_got = n;
+	    ze_got = err;
 	    se_got = 0;
 	}
     }
@@ -165,7 +191,7 @@ do_read(struct zip *z, const char *name, int flags,
 	       when_name[when_ex], expected);
 	return 1;
     }
-    else if (getenv("VERBOSE"))
+    else if (verbose)
 	printf("%s: %s: passed\n", prg, name);
 
     return 0;

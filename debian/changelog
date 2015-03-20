@@ -1,8 +1,52 @@
+libzip (0.11.2-1.2) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * Add CVE-2015-2331.patch patch.
+    CVE-2015-2331: ZIP integer overflow leads to writing past heap boundary.
+    (Closes: #780756)
+
+ -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 20 Mar 2015 20:17:45 +0100
+
+libzip (0.11.2-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Put a symlink to zipconf.h on the default search path, so that
+    packages that do not use pkg-config to locate libzip will not FTBFS.
+    Thanks to Simon McVittie (Closes: #739308).
+
+ -- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>  Wed, 06 Aug 2014 15:38:27 +0200
+
+libzip (0.11.2-1) unstable; urgency=medium
+
+  * New upstream release (Closes: #734388).
+  * Remove patches:
+    - fix_open_nonarchive_test.patch - fixed upstream
+    - fix_zipconf_path.patch - fixed upstream
+    - fix_broken_decrypt.patch - fixed upstream
+    - fix_autotools_tests.diff - stolen upstream
+  * Update debian/control:
+    - add unzip to Build-Depends.
+    - bump compat to 9
+  * Update *.install: multiarch paths.
+  * Update libzip2 symbols file.
+
+ -- Fathi Boudra <fabo@debian.org>  Sun, 09 Feb 2014 13:24:18 +0200
+
+libzip (0.10.1-1.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix "FTBFS: dh_auto_test: make -j1 check returned exit code 2":
+    add patch fix_autotools_tests.diff (autotools test fix, backported from
+    upstream 0.11.1), taken from Ubuntu package. Thanks, Bjoern Michaelsen.
+    (Closes: #713393, LP: #1197023)
+
+ -- gregor herrmann <gregoa@debian.org>  Sun, 03 Nov 2013 15:27:06 +0100
+
 libzip (0.10.1-1.1) unstable; urgency=low
 
   * Non-maintainer upload.
   * Re-enable tests
-  * Fix broken decrypt on amd64 (Closes: 665225).
+  * Fix broken decrypt on amd64 (Closes: #665225).
 
  -- Luk Claes <luk@debian.org>  Sat, 07 Jul 2012 02:03:46 +0000
 

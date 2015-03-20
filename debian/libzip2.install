@@ -1,1 +1,1 @@
-usr/lib/libzip.so.*
+usr/lib/*/libzip.so.*

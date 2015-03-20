@@ -1,6 +1,6 @@
 /*
-  zipcmp.c -- compare zip files
-  Copyright (C) 2008-2010 Dieter Baron and Thomas Klausner
+  ziptorrent.c -- convert zip to torrentzip
+  Copyright (C) 2008-2012 Dieter Baron and Thomas Klausner
 
   This file is part of libzip, a library to manipulate ZIP archives.
   The authors can be contacted at <libzip@nih.at>
@@ -59,7 +59,7 @@ const char *prg;
 
 #define PROGRAM	"ziptorrent"
 
-char *usage = "usage: %s [-hnVv] zip [...]\n";
+const char *usage = "usage: %s [-hnVv] zip [...]\n";
 
 char help_head[] =
     PROGRAM " (" PACKAGE ") by Dieter Baron and Thomas Klausner\n\n";
@@ -139,7 +139,7 @@ torrentzip(const char *fname, int flags)
 
     if ((za=zip_open(fname, 0, &err)) == NULL) {
 	zip_error_to_str(errstr, sizeof(errstr), err, errno);
-	fprintf(stderr, "%s: cannot open zip archive `%s': %s\n",
+	fprintf(stderr, "%s: cannot open zip archive '%s': %s\n",
 		prg, fname, errstr);
 	return -1;
     }
@@ -153,7 +153,7 @@ torrentzip(const char *fname, int flags)
 
     if ((flags & FLAG_DRYRUN) == 0) {
         if (zip_set_archive_flag(za, ZIP_AFL_TORRENT, 1) < 0) {
-	    fprintf(stderr,	"%s: cannot set torrentzip flag in `%s': %s\n",
+	    fprintf(stderr,	"%s: cannot set torrentzip flag in '%s': %s\n",
 		    prg, fname, zip_strerror(za));
 	    zip_close(za);
 	    return -1;
@@ -161,7 +161,7 @@ torrentzip(const char *fname, int flags)
     }
 
     if (zip_close(za) < 0) {
-	fprintf(stderr,	"%s: cannot torrentzip `%s': %s\n",
+	fprintf(stderr,	"%s: cannot torrentzip '%s': %s\n",
 		prg, fname, zip_strerror(za));
 	zip_unchange_all(za);
 	zip_close(za);

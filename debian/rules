@@ -3,5 +3,12 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+DEB_HOST_MULTIARCH := $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+
 %:
 	dh $@ --parallel --list-missing --with autoreconf
+
+override_dh_link:
+	install -d debian/libzip-dev/usr/include/${DEB_HOST_MULTIARCH}
+	ln -s ../../lib/${DEB_HOST_MULTIARCH}/libzip/include/zipconf.h debian/libzip-dev/usr/include/${DEB_HOST_MULTIARCH}/zipconf.h
+	dh_link

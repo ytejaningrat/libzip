@@ -1,5 +1,5 @@
 .\" zip_stat.mdoc -- get information about file
-.\" Copyright (C) 2003-2011 Dieter Baron and Thomas Klausner
+.\" Copyright (C) 2003-2012 Dieter Baron and Thomas Klausner
 .\"
 .\" This file is part of libzip, a library to manipulate ZIP archives.
 .\" The authors can be contacted at <libzip@nih.at>
@@ -29,7 +29,7 @@
 .\" OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 .\" IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.Dd February 14, 2011
+.Dd July 22, 2012
 .Dt ZIP_STAT 3
 .Os
 .Sh NAME
@@ -41,9 +41,9 @@ libzip (-lzip)
 .Sh SYNOPSIS
 .In zip.h
 .Ft int
-.Fn zip_stat "struct zip *archive" "const char *fname" "int flags" "struct zip_stat *sb"
+.Fn zip_stat "struct zip *archive" "const char *fname" "zip_flags_t flags" "struct zip_stat *sb"
 .Ft int
-.Fn zip_stat_index "struct zip *archive" "int index" "int flags" "struct zip_stat *sb"
+.Fn zip_stat_index "struct zip *archive" "int index" "zip_flags_t flags" "struct zip_stat *sb"
 .Sh DESCRIPTION
 The
 .Fn zip_stat
@@ -101,23 +101,23 @@ Check if the flag defined by the following defines are in
 .Ar valid
 before accessing the fields:
 .Bl -tag -width ZIP_STAT_ENCRYPTION_METHODXX -compact -offset indent
-.It ZIP_STAT_NAME
+.It Dv ZIP_STAT_NAME
 .Ar name
-.It ZIP_STAT_INDEX
+.It Dv ZIP_STAT_INDEX
 .Ar index
-.It ZIP_STAT_SIZE
+.It Dv ZIP_STAT_SIZE
 .Ar size
-.It ZIP_STAT_COMP_SIZE
+.It Dv ZIP_STAT_COMP_SIZE
 .Ar comp_size
-.It ZIP_STAT_MTIME
+.It Dv ZIP_STAT_MTIME
 .Ar mtime
-.It ZIP_STAT_CRC
+.It Dv ZIP_STAT_CRC
 .Ar crc
-.It ZIP_STAT_COMP_METHOD
+.It Dv ZIP_STAT_COMP_METHOD
 .Ar comp_method
-.It ZIP_STAT_ENCRYPTION_METHOD
+.It Dv ZIP_STAT_ENCRYPTION_METHOD
 .Ar encryption_method
-.It ZIP_STAT_FLAGS
+.It Dv ZIP_STAT_FLAGS
 .Ar flags
 .El
 .Sh RETURN VALUES
@@ -150,6 +150,6 @@ callback, the error information is set to
 .Xr zip_stat_init 3
 .Sh AUTHORS
 .An -nosplit
-.An Dieter Baron Aq dillo@giga.or.at
+.An Dieter Baron Aq Mt dillo@nih.at
 and
-.An Thomas Klausner Aq tk@giga.or.at
+.An Thomas Klausner Aq Mt tk@giga.or.at

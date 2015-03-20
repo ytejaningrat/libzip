@@ -39,8 +39,10 @@
 
 #include "zip.h"
 
-int find_fail(struct zip *, const char *, int, int);
-int find_success(struct zip *, const char *, int);
+#include "compat.h"
+
+static int find_fail(struct zip *, const char *, int, int);
+static int find_success(struct zip *, const char *, int);
 
 const char *prg;
 
@@ -52,6 +54,8 @@ main(int argc, char *argv[])
     int fail, ze;
     struct zip *z;
     const char *archive;
+    struct zip_source *s;
+    const char buf[] = "teststring";
 
     fail = 0;
     prg = argv[0];
@@ -64,13 +68,16 @@ main(int argc, char *argv[])
     archive = argv[1];
 
     if ((z=zip_open(archive, 0, &ze)) == NULL) {
-	printf("%s: opening zip archive ``%s'' failed (%d)\n", prg,
-	       archive, ze);
+        char buf2[100];
+        zip_error_to_str(buf2, sizeof(buf2), ze, errno);
+	printf("%s: can't open zip archive '%s': %s\n", prg,
+	       archive, buf2);
 	return 1;
     }
 
     fail += find_fail(z, "nosuchfile", 0, ZIP_ER_NOENT);
     fail += find_success(z, "test", 0);
+    fail += find_fail(z, "", 0, ZIP_ER_NOENT);
     fail += find_fail(z, "TeSt", 0, ZIP_ER_NOENT);
     fail += find_success(z, "TeSt", ZIP_FL_NOCASE);
     fail += find_success(z, "testdir/test2", 0);
@@ -84,12 +91,24 @@ main(int argc, char *argv[])
     zip_delete(z, 0);
     fail += find_fail(z, "test", 0, ZIP_ER_NOENT);
     fail += find_success(z, "test", ZIP_FL_UNCHANGED);
+    if ((s=zip_source_buffer(z, buf, sizeof(buf), 0)) == NULL || zip_file_add(z, "new", s, 0) < 0) {
+	zip_source_free(s);
+	printf("error adding file: %s\n", zip_strerror(z));
+    }
+    fail += find_success(z, "new", 0);
+    fail += find_fail(z, "new", ZIP_FL_UNCHANGED, ZIP_ER_NOENT);
+    if ((s=zip_source_buffer(z, buf, sizeof(buf), 0)) == NULL || zip_file_add(z, "", s, 0) < 0) {
+	zip_source_free(s);
+	printf("error adding file: %s\n", zip_strerror(z));
+    }
+    fail += find_success(z, "", 0);
     zip_unchange_all(z);
     fail += find_success(z, "test", 0);
+    fail += find_fail(z, "new", 0, ZIP_ER_NOENT);
 
     if (zip_close(z) == -1) {
-	fprintf(stderr, "%s: can't close zip archive %s\n", prg,
-		archive);
+	fprintf(stderr, "%s: can't close zip archive '%s': %s\n", prg,
+		archive, zip_strerror(z));
 	return 1;
     }
 
@@ -98,37 +117,38 @@ main(int argc, char *argv[])
 
 
 
-int
+static int
 find_fail(struct zip *z, const char *name, int flags, int zerr)
 {
     int ze, se;
     char expected[80];
+    zip_int64_t idx;
 
-    if (zip_name_locate(z, name, flags) < 0) {
+    if ((idx=zip_name_locate(z, name, flags)) < 0) {
 	zip_error_get(z, &ze, &se);
 	if (ze != zerr) {
 	    zip_error_to_str(expected, sizeof(expected), zerr, 0);
-	    printf("%s: unexpected error while looking for ``%s'': "
-		   "got ``%s'', expected ``%s''\n", prg, name,
-		   zip_strerror(z), expected);
+	    printf("unexpected error while looking for '%s' with flags %x: got `%s', expected `%s'\n",
+		   name, flags, zip_strerror(z), expected);
 	    return 1;
 	}
 
 	return 0;
     }
 
+    printf("unexpected success while looking for '%s' with flags %x: index %" PRId64 "\n", name, flags, idx);
     return 1;
 }
 
 
 
-int
+static int
 find_success(struct zip *z, const char *name, int flags)
 {
 
     if (zip_name_locate(z, name, flags) < 0) {
-	printf("%s: unexpected error while looking for ``%s'': %s\n",
-	       prg, name, zip_strerror(z));
+	printf("unexpected error while looking for '%s' with flags %x: %s\n",
+	       name, flags, zip_strerror(z));
 	return 1;
     }
 

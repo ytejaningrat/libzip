@@ -17,10 +17,12 @@
 #cmakedefine HAVE_OPEN
 #cmakedefine HAVE_MKSTEMP
 #cmakedefine HAVE_SNPRINTF
+#cmakedefine HAVE_SSIZE_T_LIBZIP
 #cmakedefine HAVE_STRCASECMP
 #cmakedefine HAVE_STRDUP
 #cmakedefine HAVE_STRUCT_TM_TM_ZONE
 #cmakedefine HAVE_MOVEFILEEXA
+#cmakedefine HAVE_STDBOOL_H
 #cmakedefine HAVE_STRINGS_H
 #cmakedefine HAVE_UNISTD_H
 #cmakedefine __INT8_LIBZIP ${__INT8_LIBZIP}
@@ -38,6 +40,10 @@
 #cmakedefine SIZEOF_OFF_T ${SIZEOF_OFF_T}
 #cmakedefine SIZE_T_LIBZIP ${SIZE_T_LIBZIP}
 #cmakedefine SSIZE_T_LIBZIP ${SSIZE_T_LIBZIP}
+#cmakedefine HAVE_DIRENT_H
+#cmakedefine HAVE_NDIR_H
+#cmakedefine HAVE_SYS_DIR_H
+#cmakedefine HAVE_SYS_NDIR_H
 /* END DEFINES */
 #define PACKAGE "@PACKAGE@"
 #define VERSION "@VERSION@"

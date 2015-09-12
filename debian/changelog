@@ -1,3 +1,14 @@
+libzip (1.0.1-0ubuntu1) wily; urgency=medium
+
+  * New upstream version.
+  * libzip soname change (libzip2 -> libzip4).
+  * Update symbols file.
+  * Stop building the libtorrent package; removed upstream.
+  * Mark libzip-dev and libzip4 as Multi-Arch: same.
+  * Bump standards version.
+
+ -- Matthias Klose <doko@ubuntu.com>  Sat, 12 Sep 2015 02:51:54 +0200
+
 libzip (0.11.2-1.2) unstable; urgency=high
 
   * Non-maintainer upload.

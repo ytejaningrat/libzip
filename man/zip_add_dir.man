@@ -1,20 +1,16 @@
 .TH "ZIP_ADD_DIR" "3" "June 23, 2012" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
 .SH "NAME"
-\fBzip_add_dir\fR
+\fBzip_add_dir\fP
 \- add directory to zip archive
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
-.sp
-\fIzip_int64_t\fR
-.br
-\fBzip_add_dir\fR(\fIstruct zip *archive\fR,\ \fIconst char *name\fR);
+zip.h
+zip_int64_t
+zip_add_dir zip_t *archive const char *name
 .SH "DESCRIPTION"
 The function
-\fBzip_add_dir\fR()
+zip_add_dir
 is the obsolete version of
 zip_dir_add(3).
 It is the same as calling
@@ -24,6 +20,6 @@ with an empty flags argument.
 libzip(3),
 zip_dir_add(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

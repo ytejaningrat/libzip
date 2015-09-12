@@ -13,6 +13,12 @@ For example for adding extractors for self-extracting zip archives.
 * zip_set_archive_prefix(struct zip *za, const zip_uint8_t *data, zip_uint64_t length);
 * const zip_uint8_t *zip_get_archive_prefix(struct zip *za, zip_uint64_t *lengthp);
 
+Progress Callback
+-----------------
+Register callback; will be called from zip_close() after each file has been processed.
+typedef void (*zip_progress_callback_t)(double);
+void zip_register_progress_callback(zip_t *, zip_progress_callback_t);
+
 API Issues
 ==========
 ! D zip_get_archive_comment has int *lenp argument.  Cleaner would be zip_uint32_t *.
@@ -25,73 +31,90 @@ API Issues
 
 Features
 ========
-* progress callback for zip_close (called after each file written completely)
+* support setting extra fields from zip_source
+  . introduce layers of extra fields:
+    . original
+    . from zip_source
+    . manually set
+  . when querying extra fields, search all of them in reverse order
+  . add whiteout (deleted) flag
+  . allow invalid data flag, used when computing extra field size before writing data
+  . new command ZIP_SOURCE_EXTRA_FIELDS
+  . no support for multiple copies of same extra field
+* delete all extra fields during zip_replace()
 * function to copy file from one archive to another
-* do not compress if storing is smaller
 * set O_CLOEXEC flag after fopen and mkstemp
 
-! W test extra fields api
-  . set
-* I/O methods
 * support streaming output (creating new archive to e.g. stdout)
 * add functions to:
-  . set last modification time for entry
   . read/set ASCII file flag? (wiz: more general options?)
 * zip_commit (to finish changes without closing archive)
 * add custom compression function support
+* zip_fseek
 * zip_source_zip: allow rewinding
-* zip_source_seek, zip_fseek
 * zipcmp: add option for file content comparison
 * zipcmp: compare bit flags if paranoid
 * zipcmp: compare external attributes/opsys if paranoid
+* zipcmp: compare last_mod if paranoid (or with separate flag?)
 * consistency
   . for stored files, test compressed = uncompressed
   . data descriptor
   . local headers come before central dir
 
-- support for old compression methods?????
-- append to files (for self-extracting files)
+* support for old compression methods?????
 
 
 Bugs
 ====
-* embed stripped down old zlib for torrentzip
+* support InfoZIP encryption header extension (copy data descriptor for encrypted files)
 ! ensure that nentries is small enough not to cause overflow (size_t for entry, uint64 for CD on disk)
 * Xcode 32bit build uses 64bit config.h
 * fix OpenSUSE i686 regression failures
 * fix open_filename_duplicate_consistency.test to fail
-* split zip archive torrentzip state from user requested torrentzip state
 * check for limits imposed by format (central dir size, file size, extra fields, ...)
 * _zip_u2d_time: handle localtime(3) failure
-* missing -Wl,-R in pkg-config file
 * POSIX: zip_open: check whether file can be created and fail if not
-* POSIX: fix permissions of new file to match old one
 * fix inconsistent usage of valid flags (not checked in many places)
 * cdr == NULL -> ER_NOENT vs. idx > cdir->nentry -> ER_INVAL inconsistent (still there?)
-* torrentzip broken on NetBSD/amd64 6.99
-* torrentzip: check behaviour of files with empty name (size 0; file size > 0)
 
 
 Cleanup
 =======
+* use bool
+* use ZIP_SOURCE_SUPPORTS_{READABLE,SEEKABLE,WRITABLE}
+* use zip_source_seek_compute_offset
 * move compat refs from zipint.h to own file, and include that in zipint.h and src
 * get rid of zip_get_{compression,encryption}_implementation
 * use zip_*int*_t internally
-* clean up lint(1) warnings?
+
+
+Analysis
+========
+* pass through coverity
+
+
+Infrastructure
+==============
+* create CMakefile.txt man page linking from links file
 
 
 Test Case Issues
 ================
+* test cases for set_extra*, delete_extra*, *extra_field*
+* test cases for in memory archives
+  add
+  delete
+  delete all
+  modify
+* use gcov output to increase test coverage
+* merge most tools into modify
+* add test case to change values for newly added files (name, compression method, comment, mtime, . . .)
 * zip_open file less than EOCDLEN bytes long
 * test calls against old API
 * run regression tests also from CMake framework
 * rename file to dir/ and vice versa (fails)
 * fix comment test to be newline insensitive
-* zip64 test case ideas (but how to provide comparison and input files?)
-  Create files with:
-  * compressed < 4GB, uncompressed > 4GB
-  * compressed > 4GB
-  * offset of file or central directory > 4GB
+* check if http://bugs.python.org/issue20078 provides ideas for new tests
 
 * (add, replace)
 	add to empty zip
@@ -124,58 +147,20 @@ Test Case Issues
 * (strerror)
 * (unchange)
 * (unchange_all)
+* open(ZIP_RDONLY)
+* I/O abstraction layer
+    zip_open_from_source
+* read two zip entries interleaved
 
 
-I/O Methods
-===========
-One major headache for libzip portability (especially to Windows) is
-I/O, i.e. reading and writing from the file system.  Also, there
-have been requests to open zip archives from a memory buffer.  To
-address these issues, we'll introduce an I/O abstraction layer.
+Unsorted
+========
+* zip_source_file: don't allow write if start/len specify a part of the file
+* script to check if all exported symbols are marked with ZIP_EXTERN, add to make distcheck
 
-  We'll reuse zip_source, since it already provides support for
-the reading part, adding high level abstraction of the additional
-operations needed. This way, newly written zip_sources can be used
-both for adding files into an archive as well as for accessing archives
-themselves.
+D re-implement fix for OS X sandboxing (zip_archive_set_tempdir).
 
-Specifically, we'll add these commands:
-
-ZIP_SOURCE_BEGIN_WRITE
-        Prepare for writing.  The written data will replace all
-        original data.  The file position is reset to 0.  (On POSIX
-        systems, this will create a temporary file and open it for
-        writing.)
-
-ZIP_SOURCE_WRITE
-        Write bytes of data, a la fwrite(3) (does not need to know
-        anything about the zip archive structure).
-
-ZIP_SOURCE_COMMIT_WRITE
-        Used after all data has been written successfully. (On
-        POSIX systems, this will replace the original file with
-        the temporary file, adapting permissions etc.)
-ZIP_SOURCE_ROLLBACK_WRITE
-        because writing failed) to restore original data if possible;
-        return an errohis will
-        delete the temporary file.)
-
-ZIP_SOURCE_SEEK
-        Set position for next read or write, a la fseek(3).
-
-ZIP_SOURCE_SUPPORTS
-        Query which commands are supported for this stream.  If a
-        file cannot be written to, this will report ZIP_SOURCE_BEGIN_WRITE
-        as not supported, even if the source type would support
-        write.  (This is used in zip_open to set global flags like
-        ZIP_AFL_RDONLY.)
-
-  We'll provide a zip_open variant that takes a zip_source argument
-used for reading/writing archives.  Using an enhanced version of
-zip_source_buffer, this can be used to read zip archives from memory.
-
-  zip_open itself will create a source from the file using a
-port-specific default implementation (POSIX vs. Windows vs. ...).
-
-  Once the details are finalized, we'll ask for volunteers for writing
-a Windows specific implementation.
+* document: zip_source_write: length can't be > ZIP_INT64_MAX
+* document: ZIP_SOURCE_CLOSE implementation can't return error
+* keep error codes in man pages in sync
+* document error codes in new man pages

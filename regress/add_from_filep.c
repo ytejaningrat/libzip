@@ -1,6 +1,6 @@
 /*
   add_from_filep.c -- test case for adding file to archive
-  Copyright (C) 1999, 2003, 2005 Dieter Baron and Thomas Klausner
+  Copyright (C) 1999-2014 Dieter Baron and Thomas Klausner
 
   This file is part of libzip, a library to manipulate ZIP archives.
   The authors can be contacted at <libzip@nih.at>
@@ -31,7 +31,6 @@
   IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 
 #include <errno.h>
 #include <stdio.h>
@@ -48,9 +47,8 @@ main(int argc, char *argv[])
     const char *archive;
     const char *file;
     const char *name;
-    struct zip *za;
-    struct zip_source *zs;
-    char buf[100];
+    zip_t *za;
+    zip_source_t *zs;
     int err;
     FILE *fp;
 
@@ -65,9 +63,10 @@ main(int argc, char *argv[])
     file = argv[2];
     
     if ((za=zip_open(archive, ZIP_CREATE, &err)) == NULL) {
-	zip_error_to_str(buf, sizeof(buf), err, errno);
-	fprintf(stderr, "%s: can't open zip archive '%s': %s\n", prg,
-		archive, buf);
+	zip_error_t error;
+	zip_error_init_with_code(&error, err);
+	fprintf(stderr, "%s: can't open zip archive '%s': %s\n", prg, archive, zip_error_strerror(&error));
+	zip_error_fini(&error);
 	return 1;
     }
 

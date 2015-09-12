@@ -1,43 +1,39 @@
 .TH "ZIP_STAT_INIT" "3" "September 22, 2013" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
 .SH "NAME"
-\fBzip_stat_init\fR
+\fBzip_stat_init\fP
 \- initialize zip_stat structure
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
-.sp
-\fIvoid\fR
-.br
-\fBzip_stat_init\fR(\fIstruct zip_stat *sb\fR);
+zip.h
+void
+zip_stat_init zip_stat_t *sb
 .SH "DESCRIPTION"
 The
-\fBzip_stat_init\fR()
+zip_stat_init
 function initializes the members of a struct zip_stat.
 The current members are described in
 zip_stat(3),
 but this function should be used to initialize it to
 make sure none are missed.
 The structure pointed to by
-\fIsb\fR
+\fIsb\fP
 must be allocated before calling
-\fBzip_stat_init\fR().
+zip_stat_init.
 .PP
 This function should be used by functions provided to
 zip_source_function(3)
 when returning
-\fRZIP_SOURCE_STAT\fR
+\fRZIP_SOURCE_STAT\fP
 information to make sure all fields are initialized.
 .SH "RETURN VALUES"
 If
-\fIsb\fR
+\fIsb\fP
 is valid, the function is always successful.
 .SH "SEE ALSO"
 libzip(3),
 zip_stat(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

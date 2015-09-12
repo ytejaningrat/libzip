@@ -2,14 +2,15 @@ Source: libzip
 Priority: optional
 Maintainer: Fathi Boudra <fabo@debian.org>
 Build-Depends: debhelper (>= 9), dh-autoreconf, unzip, zlib1g-dev
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Section: libs
 Homepage: http://www.nih.at/libzip/
 
 Package: libzip-dev
 Section: libdevel
 Architecture: any
-Depends: libzip2 (= ${binary:Version}), zlib1g-dev, ${misc:Depends}
+Multi-Arch: same
+Depends: libzip4 (= ${binary:Version}), zlib1g-dev, ${misc:Depends}
 Description: library for reading, creating, and modifying zip archives (development)
  libzip is a C library for reading, creating, and modifying zip archives. Files
  can be added from data buffers, files, or compressed data copied directly from
@@ -18,8 +19,10 @@ Description: library for reading, creating, and modifying zip archives (developm
  This package contains the static libraries and headers for developing
  applications that use the libzip library API.
 
-Package: libzip2
+Package: libzip4
 Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: library for reading, creating, and modifying zip archives (runtime)
  libzip is a C library for reading, creating, and modifying zip archives. Files
@@ -46,11 +49,3 @@ Description: merge zip archives
  zipmerge merges a source zip archives into a target zip archive.
  By default, files in the source zip archives overwrite existing files of the
  same name in the target zip archive.
-
-Package: ziptorrent
-Section: utils
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: torrentzip zip archives
- ziptorrent torrentzips archive. This is a restricted file format used for
- using bittorrent on zip files.

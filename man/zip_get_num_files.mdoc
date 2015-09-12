@@ -1,5 +1,5 @@
 .\" zip_get_num_files.mdoc -- get number of files in archive
-.\" Copyright (C) 2003-2011 Dieter Baron and Thomas Klausner
+.\" Copyright (C) 2003-2014 Dieter Baron and Thomas Klausner
 .\"
 .\" This file is part of libzip, a library to manipulate ZIP archives.
 .\" The authors can be contacted at <libzip@nih.at>
@@ -40,12 +40,12 @@ libzip (-lzip)
 .Sh SYNOPSIS
 .In zip.h
 .Ft int
-.Fn zip_get_num_files "struct zip *archive"
+.Fn zip_get_num_files "zip_t *archive"
 .Sh DESCRIPTION
-.Em This function is deprecated.
+.Em This function is deprecated .
 .Em Use
 .Xr zip_get_num_entries 3
-.Em instead.
+.Em instead .
 .Pp
 The
 .Fn zip_get_num_files

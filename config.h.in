@@ -13,6 +13,9 @@
 /* Define to 1 if you have the `ftello' function. */
 #undef HAVE_FTELLO
 
+/* Define to 1 if you have the <fts.h> header file. */
+#undef HAVE_FTS_H
+
 /* Define to 1 if you have the `getopt' function. */
 #undef HAVE_GETOPT
 
@@ -51,6 +54,9 @@
 
 /* Define to 1 if the system has the type `ssize_t'. */
 #undef HAVE_SSIZE_T
+
+/* Define to 1 if you have the <stdbool.h> header file. */
+#undef HAVE_STDBOOL_H
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H

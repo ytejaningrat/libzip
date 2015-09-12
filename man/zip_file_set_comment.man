@@ -1,84 +1,80 @@
 .TH "ZIP_FILE_SET_COMMENT" "3" "September 19, 2013" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
 .SH "NAME"
-\fBzip_file_set_comment\fR
+\fBzip_file_set_comment\fP
 \- set comment for file in zip
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
-.sp
-\fIint\fR
-.br
-\fBzip_set_file_comment\fR(\fIstruct zip *archive\fR,\ \fIzip_uint64_t index\fR,\ \fIconst char *comment\fR,\ \fIzip_uint16_t len\fR,\ \fIzip_flags_t flags\fR);
+zip.h
+int
+zip_set_file_comment zip_t *archive zip_uint64_t index const char *comment zip_uint16_t len zip_flags_t flags
 .SH "DESCRIPTION"
 The
-\fBzip_file_set_comment\fR()
+zip_file_set_comment
 function sets the comment for the file at position
-\fIindex\fR
+\fIindex\fP
 in the zip archive to
-\fIcomment\fR
+\fIcomment\fP
 of length
-\fIlen\fR.
+\fIlen\fP.
 If
-\fIcomment\fR
+\fIcomment\fP
 is
-\fRNULL\fR
+\fRNULL\fP
 and
-\fIlen\fR
+\fIlen\fP
 is 0, the file comment will be removed.
 The
-\fIflags\fR
+\fIflags\fP
 argument can be any of:
-.TP 22n
-\fRZIP_FL_ENC_GUESS\fR
+.TP XZIPXFLXENCXSTRICTXX
+\fRZIP_FL_ENC_GUESS\fP
 Guess encoding of
-\fIcomment\fR
+\fIcomment\fP
 (default).
-.TP 22n
-\fRZIP_FL_ENC_UTF_8\fR
+.TP XZIPXFLXENCXSTRICTXX
+\fRZIP_FL_ENC_UTF_8\fP
 Interpret
-\fIcomment\fR
+\fIcomment\fP
 as UTF-8.
-.TP 22n
-\fRZIP_FL_ENC_CP437\fR
+.TP XZIPXFLXENCXSTRICTXX
+\fRZIP_FL_ENC_CP437\fP
 Interpret
-\fIcomment\fR
+\fIcomment\fP
 as code page 437 (CP-437).
 .SH "RETURN VALUES"
 Upon successful completion 0 is returned.
 Otherwise, \-1 is returned and the error information in
-\fIarchive\fR
+\fIarchive\fP
 is set to indicate the error.
 .SH "ERRORS"
-\fBzip_file_set_comment\fR()
+zip_file_set_comment
 fails if:
-.TP 19n
-[\fRZIP_ER_INVAL\fR]
-\fIindex\fR
+.TP 17n
+[\fRZIP_ER_INVAL\fP]
+\fIindex\fP
 is not a valid file index in
-\fIarchive\fR,
+\fIarchive\fP,
 or
-\fIlen\fR
+\fIlen\fP
 is less than 0 or longer than the maximum comment length in a zip file
 (65535), or
-\fIcomment\fR
+\fIcomment\fP
 is not a valid UTF-8 encoded string.
-.TP 19n
-[\fRZIP_ER_MEMORY\fR]
+.TP 17n
+[\fRZIP_ER_MEMORY\fP]
 Required memory could not be allocated.
-.TP 19n
-[\fRZIP_ER_RDONLY\fR]
+.TP 17n
+[\fRZIP_ER_RDONLY\fP]
 The
-\fIarchive\fR
+\fIarchive\fP
 was opened in read-only mode.
 .SH "SEE ALSO"
 libzip(3),
-zip_get_archive_comment(3),
 zip_file_get_comment(3),
+zip_get_archive_comment(3),
 zip_set_archive_comment(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

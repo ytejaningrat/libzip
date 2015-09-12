@@ -1,36 +1,24 @@
-.TH "ZIP_SET_ARCHIVE_FLAG" "3" "July 22, 2012" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
+.TH "ZIP_SET_ARCHIVE_FLAG" "3" "April 29, 2015" "NiH" "Library Functions Manual"
 .SH "NAME"
-\fBzip_set_archive_flag\fR
+\fBzip_set_archive_flag\fP
 \- set zip archive flag
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
-.sp
-\fIint\fR
-.br
-\fBzip_set_archive_flag\fR(\fIstruct zip *archive\fR,\ \fIzip_flags_t flag\fR,\ \fIint value\fR);
+zip.h
+int
+zip_set_archive_flag zip_t *archive zip_flags_t flag int value
 .SH "DESCRIPTION"
 The
-\fBzip_set_archive_flag\fR()
+zip_set_archive_flag
 function sets the flag
-\fIflag\fR
+\fIflag\fP
 for the archive
-\fIarchive\fR
+\fIarchive\fP
 to the value
-\fIvalue\fR.
+\fIvalue\fP.
 .PP
-Supported flags are:
-.TP 21n
-\fRZIP_AFL_TORRENT\fR
-Create a torrent-zipped archive.
-This restricts the values that can be set from the application side.
-In particular, time stamps are not saved and the order of the files in
-the archive is alphabetical.
-No file comments or extended attributes are allowed and the archive
-comment can not be chosen.
+Currently there are no supported flags.
 .SH "RETURN VALUES"
 Upon successful completion 0 is returned, and \-1 if an error
 occurred.
@@ -38,6 +26,6 @@ occurred.
 libzip(3),
 zip_get_archive_flag(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

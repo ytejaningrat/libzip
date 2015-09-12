@@ -1,4 +1,5 @@
 SET(MDOC3_PAGES
+  ZIP_SOURCE_GET_ARGS.mdoc
   libzip.mdoc
   zip_add.mdoc
   zip_add_dir.mdoc
@@ -7,8 +8,16 @@ SET(MDOC3_PAGES
   zip_dir_add.mdoc
   zip_discard.mdoc
   zip_error_clear.mdoc
+  zip_error_code_system.mdoc
+  zip_error_code_zip.mdoc
+  zip_error_fini.mdoc
   zip_error_get.mdoc
   zip_error_get_sys_type.mdoc
+  zip_error_init.mdoc
+  zip_error_set.mdoc
+  zip_error_strerror.mdoc
+  zip_error_system_type.mdoc
+  zip_error_to_data.mdoc
   zip_error_to_str.mdoc
   zip_errors.mdoc
   zip_fclose.mdoc
@@ -18,7 +27,8 @@ SET(MDOC3_PAGES
   zip_file_extra_field_get.mdoc
   zip_file_extra_field_set.mdoc
   zip_file_extra_fields_count.mdoc
-  zip_file_get_comment.mdoc
+  zip_file_get_comment.mdoc 
+  zip_file_get_error.mdoc
   zip_file_rename.mdoc
   zip_file_set_comment.mdoc
   zip_file_strerror.mdoc
@@ -27,6 +37,7 @@ SET(MDOC3_PAGES
   zip_fread.mdoc
   zip_get_archive_comment.mdoc
   zip_get_archive_flag.mdoc
+  zip_get_error.mdoc
   zip_get_file_comment.mdoc
   zip_get_name.mdoc
   zip_get_num_entries.mdoc
@@ -39,11 +50,31 @@ SET(MDOC3_PAGES
   zip_set_default_password.mdoc
   zip_set_file_comment.mdoc
   zip_set_file_compression.mdoc
+  zip_source_begin_write.mdoc
   zip_source_buffer.mdoc
+  zip_source_close.mdoc
+  zip_source_commit_write.mdoc
+  zip_source_error.mdoc
   zip_source_file.mdoc
   zip_source_filep.mdoc
   zip_source_free.mdoc
   zip_source_function.mdoc
+  zip_source_is_deleted.mdoc
+  zip_source_keep.mdoc
+  zip_source_make_command_bitmap.mdoc
+  zip_source_open.mdoc
+  zip_source_read.mdoc
+  zip_source_rollback_write.mdoc
+  zip_source_seek.mdoc
+  zip_source_seek_compute_offset.mdoc
+  zip_source_seek_write.mdoc
+  zip_source_stat.mdoc
+  zip_source_tell.mdoc
+  zip_source_tell_write.mdoc
+  zip_source_win32a.mdoc
+  zip_source_win32handle.mdoc
+  zip_source_win32w.mdoc
+  zip_source_write.mdoc
   zip_source_zip.mdoc
   zip_stat.mdoc
   zip_stat_init.mdoc
@@ -54,7 +85,6 @@ SET(MDOC3_PAGES
 SET(MDOC1_PAGES
   zipcmp.mdoc
   zipmerge.mdoc
-  ziptorrent.mdoc
 )
 SET(MDOC_PAGES ${MDOC1_PAGES} ${MDOC3_PAGES})
 STRING(REGEX REPLACE .mdoc "" MAN1_PAGES "${MDOC1_PAGES}")
@@ -84,20 +114,26 @@ INSTALL(FILES zip_error_clear.${MANFMT} DESTINATION ${MAN_PATH}/man3
   RENAME zip_file_error_clear.3)
 INSTALL(FILES zip_error_get.${MANFMT} DESTINATION ${MAN_PATH}/man3
   RENAME zip_file_error_get.3)
-INSTALL(FILES zip_file_add.${MANFMT} DESTINATION ${MAN_PATH}/man3
-  RENAME zip_file_replace.3)
+INSTALL(FILES zip_error_init.${MANFMT} DESTINATION ${MAN_PATH}/man3
+  RENAME zip_error_init_with_code.3)
 INSTALL(FILES zip_file_extra_field_delete.${MANFMT} DESTINATION ${MAN_PATH}/man3
   RENAME zip_file_extra_field_delete_by_id.3)
 INSTALL(FILES zip_file_extra_field_get.${MANFMT} DESTINATION ${MAN_PATH}/man3
   RENAME zip_file_extra_field_get_by_id.3)
 INSTALL(FILES zip_file_extra_fields_count.${MANFMT} DESTINATION ${MAN_PATH}/man3
   RENAME zip_file_extra_fields_count_by_id.3)
+INSTALL(FILES zip_file_add.${MANFMT} DESTINATION ${MAN_PATH}/man3
+  RENAME zip_file_replace.3)
 INSTALL(FILES zip_fopen.${MANFMT} DESTINATION ${MAN_PATH}/man3
   RENAME zip_fopen_index.3)
 INSTALL(FILES zip_fopen_encrypted.${MANFMT} DESTINATION ${MAN_PATH}/man3
   RENAME zip_fopen_index_encrypted.3)
+INSTALL(FILES zip_open.${MANFMT} DESTINATION ${MAN_PATH}/man3
+  RENAME zip_open_from_source.3)
 INSTALL(FILES zip_add.${MANFMT} DESTINATION ${MAN_PATH}/man3
   RENAME zip_replace.3)
+INSTALL(FILES zip_source_function.${MANFMT} DESTINATION ${MAN_PATH}/man3
+  RENAME zip_source_function_create.3)
 INSTALL(FILES zip_stat.${MANFMT} DESTINATION ${MAN_PATH}/man3
   RENAME zip_stat_index.3)
 INSTALL(FILES zip_file_strerror.${MANFMT} DESTINATION ${MAN_PATH}/man3

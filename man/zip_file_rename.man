@@ -1,65 +1,61 @@
 .TH "ZIP_FILE_RENAME" "3" "June 23, 2012" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
 .SH "NAME"
-\fBzip_file_rename\fR
+\fBzip_file_rename\fP
 \- rename file in zip archive
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
-.sp
-\fIint\fR
-.br
-\fBzip_file_rename\fR(\fIstruct zip *archive\fR,\ \fIzip_uint64_t index\fR,\ \fIconst char *name\fR,\ \fIzip_flags_t flags\fR);
+zip.h
+int
+zip_file_rename zip_t *archive zip_uint64_t index const char *name zip_flags_t flags
 .SH "DESCRIPTION"
 The file at position
-\fIindex\fR
+\fIindex\fP
 in the zip archive
-\fIarchive\fR
+\fIarchive\fP
 is renamed to
-\fIname\fR.
+\fIname\fP.
 The
-\fIflags\fR
+\fIflags\fP
 argument can be any of:
-.TP 22n
-\fRZIP_FL_ENC_GUESS\fR
+.TP XZIPXFLXENCXSTRICTXX
+\fRZIP_FL_ENC_GUESS\fP
 Guess encoding of
-\fIname\fR
+\fIname\fP
 (default).
-.TP 22n
-\fRZIP_FL_ENC_UTF_8\fR
+.TP XZIPXFLXENCXSTRICTXX
+\fRZIP_FL_ENC_UTF_8\fP
 Interpret
-\fIname\fR
+\fIname\fP
 as UTF-8.
-.TP 22n
-\fRZIP_FL_ENC_CP437\fR
+.TP XZIPXFLXENCXSTRICTXX
+\fRZIP_FL_ENC_CP437\fP
 Interpret
-\fIname\fR
+\fIname\fP
 as code page 437 (CP-437).
 .SH "RETURN VALUES"
 Upon successful completion 0 is returned.
 Otherwise, \-1 is returned and the error code in
-\fIarchive\fR
+\fIarchive\fP
 is set to indicate the error.
 .SH "ERRORS"
-\fBzip_rename\fR()
+zip_rename
 fails if:
-.TP 19n
-[\fRZIP_ER_DELETED\fR]
+.TP 17n
+[\fRZIP_ER_DELETED\fP]
 The file to be renamed has been deleted from the archive.
-.TP 19n
-[\fRZIP_ER_EXISTS\fR]
+.TP 17n
+[\fRZIP_ER_EXISTS\fP]
 There is already a file called
-\fIname\fR
+\fIname\fP
 in the archive.
-.TP 19n
-[\fRZIP_ER_INVAL\fR]
-\fIindex\fR
+.TP 17n
+[\fRZIP_ER_INVAL\fP]
+\fIindex\fP
 is not a valid file index in
-\fIarchive\fR,
-\fIname is\fR
-\fRNULL\fR,
+\fIarchive\fP,
+\fIname is\fP
+\fRNULL\fP,
 the empty string, or not a valid UTF-8 encoded string.
 Also a file cannot be renamed to a directory or vice versa.
 Directories are denoted by a trailing slash.
@@ -67,6 +63,6 @@ Directories are denoted by a trailing slash.
 libzip(3),
 zip_unchange(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

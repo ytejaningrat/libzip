@@ -1,54 +1,46 @@
 .TH "ZIP_STAT" "3" "July 22, 2012" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
 .SH "NAME"
-\fBzip_stat\fR,
-\fBzip_stat_index\fR
+\fBzip_stat\fP,
+\fBzip_stat_index\fP
 \- get information about file
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
-.sp
-\fIint\fR
-.br
-\fBzip_stat\fR(\fIstruct zip *archive\fR,\ \fIconst char *fname\fR,\ \fIzip_flags_t flags\fR,\ \fIstruct zip_stat *sb\fR);
-.sp
-\fIint\fR
-.br
-\fBzip_stat_index\fR(\fIstruct zip *archive\fR,\ \fIint index\fR,\ \fIzip_flags_t flags\fR,\ \fIstruct zip_stat *sb\fR);
+zip.h
+int
+zip_stat zip_t *archive const char *fname zip_flags_t flags zip_stat_t *sb
+int
+zip_stat_index zip_t *archive int index zip_flags_t flags zip_stat_t *sb
 .SH "DESCRIPTION"
 The
-\fBzip_stat\fR()
+zip_stat
 function obtains information about the file named
-\fIfname\fR
+\fIfname\fP
 in
-\fIarchive\fR.
+\fIarchive\fP.
 The
-\fIflags\fR
+\fIflags\fP
 argument specifies how the name lookup should be done.
 Its values are described in
 zip_name_locate(3).
 Also,
-\fRZIP_FL_UNCHANGED\fR
+\fRZIP_FL_UNCHANGED\fP
 may be
-\fIor\fR'ed
+\fIor\fP'ed
 to it to request information about the original file in the archive,
 ignoring any changes made.
 .PP
 The
-\fBzip_stat_index\fR()
+zip_stat_index
 function obtains information about the file at position
-\fIindex\fR.
+\fIindex\fP.
 .PP
 The
-\fIsb\fR
+\fIsb\fP
 argument is a pointer to a
-\fIstruct zip_stat\fR
+struct zip_stat
 (shown below), into which information about the file is placed.
 .nf
-.sp
-.RS 0n
 struct zip_stat {
     zip_uint64_t valid;                 /* which fields have valid values */
     const char *name;                   /* name of the file */
@@ -61,81 +53,76 @@ struct zip_stat {
     zip_uint16_t encryption_method;     /* encryption method used */
     zip_uint32_t flags;                 /* reserved for future use */
 };
-.RE
 .fi
 The structure pointed to by
-\fIsb\fR
+\fIsb\fP
 must be allocated before calling
-\fBzip_stat\fR()
+zip_stat
 or
-\fBzip_stat_index\fR().
+zip_stat_index.
 .PP
 The
-\fIvalid\fR
+\fIvalid\fP
 field of the structure specifies which other fields are valid.
 Check if the flag defined by the following defines are in
-\fIvalid\fR
+\fIvalid\fP
 before accessing the fields:
-.RS 6n
-.PD 0
-.TP 30n
-\fRZIP_STAT_NAME\fR
-\fIname\fR
-.TP 30n
-\fRZIP_STAT_INDEX\fR
-\fIindex\fR
-.TP 30n
-\fRZIP_STAT_SIZE\fR
-\fIsize\fR
-.TP 30n
-\fRZIP_STAT_COMP_SIZE\fR
-\fIcomp_size\fR
-.TP 30n
-\fRZIP_STAT_MTIME\fR
-\fImtime\fR
-.TP 30n
-\fRZIP_STAT_CRC\fR
-\fIcrc\fR
-.TP 30n
-\fRZIP_STAT_COMP_METHOD\fR
-\fIcomp_method\fR
-.TP 30n
-\fRZIP_STAT_ENCRYPTION_METHOD\fR
-\fIencryption_method\fR
-.TP 30n
-\fRZIP_STAT_FLAGS\fR
-\fIflags\fR
-.RE
-.PD
+.TP ZIP_STAT_ENCRYPTION_METHODXX
+\fRZIP_STAT_NAME\fP
+\fIname\fP
+.TP ZIP_STAT_ENCRYPTION_METHODXX
+\fRZIP_STAT_INDEX\fP
+\fIindex\fP
+.TP ZIP_STAT_ENCRYPTION_METHODXX
+\fRZIP_STAT_SIZE\fP
+\fIsize\fP
+.TP ZIP_STAT_ENCRYPTION_METHODXX
+\fRZIP_STAT_COMP_SIZE\fP
+\fIcomp_size\fP
+.TP ZIP_STAT_ENCRYPTION_METHODXX
+\fRZIP_STAT_MTIME\fP
+\fImtime\fP
+.TP ZIP_STAT_ENCRYPTION_METHODXX
+\fRZIP_STAT_CRC\fP
+\fIcrc\fP
+.TP ZIP_STAT_ENCRYPTION_METHODXX
+\fRZIP_STAT_COMP_METHOD\fP
+\fIcomp_method\fP
+.TP ZIP_STAT_ENCRYPTION_METHODXX
+\fRZIP_STAT_ENCRYPTION_METHOD\fP
+\fIencryption_method\fP
+.TP ZIP_STAT_ENCRYPTION_METHODXX
+\fRZIP_STAT_FLAGS\fP
+\fIflags\fP
 .SH "RETURN VALUES"
 Upon successful completion 0 is returned.
 Otherwise, \-1 is returned and the error information in
-\fIarchive\fR
+\fIarchive\fP
 is set to indicate the error.
 .SH "ERRORS"
 The function
-\fBzip_stat\fR()
+zip_stat
 can fail for any of the errors specified for the routine
 zip_name_locate(3).
 .PP
 The function
-\fBzip_stat_index\fR()
+zip_stat_index
 fails and sets the error information to
-\fRZIP_ER_INVAL\fR
+\fRZIP_ER_INVAL\fP
 if
-\fIindex\fR
+\fIindex\fP
 is invalid.
 If
-\fRZIP_FL_UNCHANGED\fR
+\fRZIP_FL_UNCHANGED\fP
 is not set and no information can be obtained from the source
 callback, the error information is set to
-\fRZIP_ER_CHANGED\fR.
+\fRZIP_ER_CHANGED\fP.
 .SH "SEE ALSO"
 libzip(3),
 zip_get_num_entries(3),
 zip_name_locate(3),
 zip_stat_init(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

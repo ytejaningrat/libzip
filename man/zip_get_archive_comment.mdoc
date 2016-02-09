@@ -1,5 +1,5 @@
 .\" zip_get_archive_comment.mdoc -- get zip archive comment
-.\" Copyright (C) 2006-2013 Dieter Baron and Thomas Klausner
+.\" Copyright (C) 2006-2014 Dieter Baron and Thomas Klausner
 .\"
 .\" This file is part of libzip, a library to manipulate ZIP archives.
 .\" The authors can be contacted at <libzip@nih.at>
@@ -40,7 +40,7 @@ libzip (-lzip)
 .Sh SYNOPSIS
 .In zip.h
 .Ft const char *
-.Fn zip_get_archive_comment "struct zip *archive" "int *lenp" "zip_flags_t flags"
+.Fn zip_get_archive_comment "zip_t *archive" "int *lenp" "zip_flags_t flags"
 .Sh DESCRIPTION
 The
 .Fn zip_get_archive_comment
@@ -80,7 +80,7 @@ Follow the ZIP specification for file names and extend it to the
 archive comment, thus also expecting it in CP-437 encoding.
 Convert it to UTF-8.
 .El
-.Em Note:
+.Em Note :
 ASCII is a subset of both CP-437 and UTF-8.
 .Sh RETURN VALUES
 Upon successful completion, a pointer to the comment is returned,

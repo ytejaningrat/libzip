@@ -1,5 +1,5 @@
 .\" zip_file_rename.mdoc -- rename file in zip archive
-.\" Copyright (C) 2003-2012 Dieter Baron and Thomas Klausner
+.\" Copyright (C) 2003-2014 Dieter Baron and Thomas Klausner
 .\"
 .\" This file is part of libzip, a library to manipulate ZIP archives.
 .\" The authors can be contacted at <libzip@nih.at>
@@ -40,7 +40,7 @@ libzip (-lzip)
 .Sh SYNOPSIS
 .In zip.h
 .Ft int
-.Fn zip_file_rename "struct zip *archive" "zip_uint64_t index" "const char *name" \
+.Fn zip_file_rename "zip_t *archive" "zip_uint64_t index" "const char *name" \
 "zip_flags_t flags"
 .Sh DESCRIPTION
 The file at position

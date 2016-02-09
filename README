@@ -15,7 +15,10 @@ file API-CHANGES.
   For generic installation instructions, see file `INSTALL'.
 Additionally, you'll need zlib (at least version 1.1.2). It comes
 with most operating systems nowadays, or you can get it at
-	http://www.gzip.org/zlib/
+	http://www.zlib.net/
+
+  When using a static Windows library, you need to define ZIP_STATIC
+when compiling packages using libzip.
 
   If you make a binary distribution, please include a pointer to the
 distribution site:
@@ -23,9 +26,9 @@ distribution site:
 	ftp.nih.at /pub/nih/libzip
 The latest version can always be found there.
 
-  Mail suggestions and bug reports to <libzip@nih.at>.
+  There is a mailing list for developers using libzip.  You can
+subscribe to it by sending a mail with the subject "subscribe
+libzip-discuss" to minimalist at nih.at. List mail should be sent
+to libzip-discuss at nih.at. Use this for bug reports or questions.
 
-  There is also a mailing list for developers using libzip.  You can
-subscribe to it by sending a mail with the subject "subscribe libzip-discuss"
-to minimalist at nih.at. List mail should be sent to libzip-discuss at
-nih.at.
+  If you want to reach the authors in private, use <libzip@nih.at>.

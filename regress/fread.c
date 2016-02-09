@@ -1,6 +1,6 @@
 /*
   fread.c -- test cases for reading from zip archives
-  Copyright (C) 2004-2009 Dieter Baron and Thomas Klausner
+  Copyright (C) 2004-2014 Dieter Baron and Thomas Klausner
 
   This file is part of libzip, a library to manipulate ZIP archives.
   The authors can be contacted at <libzip@nih.at>
@@ -31,7 +31,6 @@
   IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 #include "config.h"
 
 #include <errno.h>
@@ -55,23 +54,22 @@ const char *when_name[] = {
     "no", "zip_fopen", "zip_fread", "zip_fclose"
 };
 
-static int do_read(struct zip *, const char *, int, enum when, int, int);
+static int do_read(zip_t *z, const char *name, zip_flags_t flags, enum when when_ex, int ze_ex, int se_ex);
 
-
 int verbose;
 
 const char *prg;
-const char * const usage = "usage: %s [-v] archive\n";
+#define USAGE "usage: %s [-v] archive\n"
 
 int
 main(int argc, char *argv[])
 {
     int fail, ze;
     int c;
-    struct zip *z;
-    struct zip_source *zs;
+    zip_t *z;
+    zip_source_t *zs;
     char *archive;
-    char errstr[1024];
+    zip_int64_t idx;
 
     verbose = 0;
     fail = 0;
@@ -85,23 +83,24 @@ main(int argc, char *argv[])
                 break;
 
             default:
-                fprintf(stderr, usage, prg);
+                fprintf(stderr, USAGE, prg);
                 return 1;
 	}
     }
 
     
     if (argc-optind != 1) {
-        fprintf(stderr, usage, prg);
+        fprintf(stderr, USAGE, prg);
         return 1;
     }
 
     archive = argv[optind];
 
     if ((z=zip_open(archive, 0, &ze)) == NULL) {
-	zip_error_to_str(errstr, sizeof(errstr), ze, errno);
-	printf("%s: can't open zip archive '%s': %s\n",
-	       prg, archive, errstr);
+	zip_error_t error;
+	zip_error_init_with_code(&error, ze);
+	fprintf(stderr, "%s: can't open zip archive '%s': %s\n", prg, archive, zip_error_strerror(&error));
+	zip_error_fini(&error);
 	return 1;
     }
 
@@ -114,8 +113,7 @@ main(int argc, char *argv[])
     fail += do_read(z, "nosuchfile", 0, WHEN_OPEN, ZIP_ER_NOENT, 0);
     fail += do_read(z, "deflatezliberror", ZIP_FL_COMPRESSED, WHEN_NEVER, 0,0);
     fail += do_read(z, "deflatecrcerror", ZIP_FL_COMPRESSED, WHEN_NEVER, 0, 0);
-    fail += do_read(z, "storedcrcerror", ZIP_FL_COMPRESSED,
-		    WHEN_READ, ZIP_ER_CRC, 0);
+    fail += do_read(z, "storedcrcerror", ZIP_FL_COMPRESSED, WHEN_READ, ZIP_ER_CRC, 0);
     fail += do_read(z, "storedok", ZIP_FL_COMPRESSED, WHEN_NEVER, 0, 0);
 
     fail += do_read(z, "cryptok", 0, WHEN_OPEN, ZIP_ER_NOPASSWD, 0);
@@ -126,18 +124,44 @@ main(int argc, char *argv[])
     zip_set_default_password(z, NULL);
 
     zs = zip_source_buffer(z, "asdf", 4, 0);
-    zip_replace(z, zip_name_locate(z, "storedok", 0), zs);
-    fail += do_read(z, "storedok", 0, WHEN_OPEN, ZIP_ER_CHANGED, 0);
-    fail += do_read(z, "storedok", ZIP_FL_UNCHANGED, WHEN_NEVER, 0, 0);
-    zip_delete(z, zip_name_locate(z, "storedok", 0));
-    fail += do_read(z, "storedok", 0, WHEN_OPEN, ZIP_ER_NOENT, 0);
-    fail += do_read(z, "storedok", ZIP_FL_UNCHANGED, WHEN_NEVER, 0, 0);
+    if ((idx = zip_name_locate(z, "storedok", 0)) < 0) {
+        fprintf(stderr, "%s: can't locate 'storedok' in zip archive '%s': %s\n", prg, archive, zip_strerror(z));
+        fail++;
+    }
+    else {
+        if (zip_replace(z, (zip_uint64_t)idx, zs) < 0) {
+            fprintf(stderr, "%s: can't replace 'storedok' in zip archive '%s': %s\n", prg, archive, zip_strerror(z));
+            fail++;
+        }
+        else {
+            fail += do_read(z, "storedok", 0, WHEN_OPEN, ZIP_ER_CHANGED, 0);
+            fail += do_read(z, "storedok", ZIP_FL_UNCHANGED, WHEN_NEVER, 0, 0);
+        }
+    }
+    if ((idx = zip_name_locate(z, "storedok", 0)) < 0) {
+        fprintf(stderr, "%s: can't locate 'storedok' in zip archive '%s': %s\n", prg, archive, zip_strerror(z));
+        fail++;
+    }
+    else {
+        if (zip_delete(z, (zip_uint64_t)idx) < 0) {
+            fprintf(stderr, "%s: can't replace 'storedok' in zip archive '%s': %s\n", prg, archive, zip_strerror(z));
+            fail++;
+        }
+        else {
+            fail += do_read(z, "storedok", 0, WHEN_OPEN, ZIP_ER_NOENT, 0);
+            fail += do_read(z, "storedok", ZIP_FL_UNCHANGED, WHEN_NEVER, 0, 0);
+        }
+    }
     zs = zip_source_buffer(z, "asdf", 4, 0);
-    if (zip_file_add(z, "new_file", zs, 0) < 0)
+    if (zip_file_add(z, "new_file", zs, 0) < 0) {
         fprintf(stderr, "%s: can't add file to zip archive '%s': %s\n", prg, archive, zip_strerror(z));
-    fail += do_read(z, "new_file", 0, WHEN_OPEN, ZIP_ER_CHANGED, 0);
+        fail++;
+    }
+    else {
+        fail += do_read(z, "new_file", 0, WHEN_OPEN, ZIP_ER_CHANGED, 0);
+    }
+    
     zip_unchange_all(z);
-
     if (zip_close(z) == -1) {
         fprintf(stderr, "%s: can't close zip archive '%s': %s\n", prg, archive, zip_strerror(z));
         return 1;
@@ -146,49 +170,49 @@ main(int argc, char *argv[])
     exit(fail ? 1 : 0);
 }
 
-
 
 static int
-do_read(struct zip *z, const char *name, int flags,
-	enum when when_ex, int ze_ex, int se_ex)
+do_read(zip_t *z, const char *name, zip_flags_t flags, enum when when_ex, int ze_ex, int se_ex)
 {
-    struct zip_file *zf;
+    zip_file_t *zf;
     enum when when_got;
-    int err, ze_got, se_got;
+    zip_error_t error_got, error_ex;
+    int err;
     char b[8192];
     zip_int64_t n;
-    char expected[80];
-    char got[80];
 
     when_got = WHEN_NEVER;
-    ze_got = se_got = 0;
+    zip_error_init(&error_got);
+    zip_error_init(&error_ex);
+    zip_error_set(&error_ex, ze_ex, se_ex);
     
     if ((zf=zip_fopen(z, name, flags)) == NULL) {
 	when_got = WHEN_OPEN;
-	zip_error_get(z, &ze_got, &se_got);
+	zip_error_t *zf_error = zip_get_error(z);
+	zip_error_set(&error_got, zip_error_code_zip(zf_error), zip_error_code_system(zf_error));
     }
     else {
 	while ((n=zip_fread(zf, b, sizeof(b))) > 0)
 	    ;
 	if (n < 0) {
 	    when_got = WHEN_READ;
-	    zip_file_error_get(zf, &ze_got, &se_got);
+	    zip_error_t *zf_error = zip_file_get_error(zf);
+	    zip_error_set(&error_got, zip_error_code_zip(zf_error), zip_error_code_system(zf_error));
 	}
 	err = zip_fclose(zf);
 	if (when_got == WHEN_NEVER && err != 0) {
 	    when_got = WHEN_CLOSE;
-	    ze_got = err;
-	    se_got = 0;
+	    zip_error_init_with_code(&error_got, err);
 	}
     }
 
-    if (when_got != when_ex || ze_got != ze_ex || se_got != se_ex) {
-	zip_error_to_str(expected, sizeof(expected), ze_ex, se_ex);
-	zip_error_to_str(got, sizeof(got), ze_got, se_got);
+    if (when_got != when_ex || zip_error_code_zip(&error_got) != zip_error_code_zip(&error_ex) || zip_error_code_system(&error_got) != zip_error_code_system(&error_ex)) {
 	printf("%s: %s: got %s error (%s), expected %s error (%s)\n",
 	       prg, name,
-	       when_name[when_got], got, 
-	       when_name[when_ex], expected);
+	       when_name[when_got], zip_error_strerror(&error_got), 
+	       when_name[when_ex], zip_error_strerror(&error_ex));
+	zip_error_fini(&error_got);
+	zip_error_fini(&error_ex);
 	return 1;
     }
     else if (verbose)

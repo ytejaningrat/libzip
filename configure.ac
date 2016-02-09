@@ -1,11 +1,20 @@
 AC_PREREQ([2.60])
-AC_INIT([libzip],[0.11.2],[libzip@nih.at])
+AC_INIT([libzip],[1.0.1],[libzip@nih.at])
 AC_CONFIG_SRCDIR([lib/zip_add.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE
 
-dnl AC_CANONICAL_HOST
+AC_CANONICAL_HOST
+dnl Add rpath flags to installed pkg-config (.pc) file on systems that prefer it this way.
+case $host_os in
+    *bsd*)
+        PKG_CONFIG_RPATH=-Wl,-R\${libdir};;
+    *)
+        PKG_CONFIG_RPATH=;;
+esac
+AC_SUBST(PKG_CONFIG_RPATH)
+
 
 AC_PROG_CC
 AC_SYS_LARGEFILE
@@ -54,7 +63,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <windows.h>],
 			[Define to 1 if you have the `MoveFileExA' function.])],
 	       [AC_MSG_RESULT([no])])
 
-AC_CHECK_HEADERS([unistd.h strings.h])
+AC_CHECK_HEADERS([fts.h stdbool.h strings.h unistd.h])
 
 AC_CHECK_TYPES([int8_t])
 AC_CHECK_TYPES([int16_t])
@@ -72,9 +81,6 @@ AC_CHECK_SIZEOF([long])
 AC_CHECK_SIZEOF([long long])
 AC_CHECK_SIZEOF([off_t])
 AC_CHECK_SIZEOF([size_t])
-
-AC_PATH_PROG([TOUCH], [touch])
-AC_PATH_PROG([UNZIP], [unzip])
 
 AC_STRUCT_TIMEZONE
 
@@ -104,6 +110,7 @@ gl_VISIBILITY
 AC_CONFIG_FILES([Makefile
 		 libzip.pc
 		 libzip-uninstalled.pc
+		 examples/Makefile
 		 man/Makefile
 		 lib/Makefile
 		 regress/Makefile

@@ -1,95 +1,84 @@
-.TH "ZIP_SOURCE_ZIP" "3" "July 22, 2012" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
+.TH "ZIP_SOURCE_ZIP" "3" "August 2, 2014" "NiH" "Library Functions Manual"
 .SH "NAME"
-\fBzip_source_zip\fR
+\fBzip_source_zip\fP
 \- create data source from zip file
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
-.sp
-\fIstruct\ zip_source\ *\fR
-.br
-\fBzip_source_zip\fR(\fIstruct zip *archive\fR,\ \fIstruct zip *srcarchive\fR,\ \fIzip_uint64_t srcidx\fR,\ \fIzip_flags_t flags\fR,\ \fIzip_uint64_t start\fR,\ \fIzip_int64_t len\fR);
+zip.h
+zip_source_t *
+zip_source_zip zip_t *archive zip_t *srcarchive zip_uint64_t srcidx zip_flags_t flags zip_uint64_t start zip_int64_t len
 .SH "DESCRIPTION"
 The function
-\fBzip_source_zip\fR()
+zip_source_zip
 creates a zip source from a file in a zip archive.
 The
-\fIsrcarchive\fR
+\fIsrcarchive\fP
 argument is the (open) zip archive containing the source zip file
 at index
-\fIsrcidx\fR.
-\fIlen\fR
+\fIsrcidx\fP.
+\fIlen\fP
 bytes from offset
-\fIstart\fR
+\fIstart\fP
 will be used in the zip_source.
 If
-\fIlen\fR
+\fIlen\fP
 is 0 or \-1, the rest of the file, starting from
-\fIstart\fR,
+\fIstart\fP,
 is used.
 If
-\fIstart\fR
+\fIstart\fP
 is zero and
-\fIlen\fR
+\fIlen\fP
 is \-1, the whole file will be copied without decompressing it.
 .PP
 Supported flags are:
-.TP 23n
-\fRZIP_FL_UNCHANGED\fR
+.TP XZIPXFLXRECOMPRESSXXX
+\fRZIP_FL_UNCHANGED\fP
 Try to get the original data without any changes that may have been
 made to
-\fIsrcarchive\fR
+\fIsrcarchive\fP
 after opening it.
-.TP 23n
-\fRZIP_FL_RECOMPRESS\fR
+.TP XZIPXFLXRECOMPRESSXXX
+\fRZIP_FL_RECOMPRESS\fP
 When adding the data from
-\fIsrcarchive\fR,
+\fIsrcarchive\fP,
 re-compress it using the current settings instead of copying the
 compressed data.
 .SH "RETURN VALUES"
 Upon successful completion, the created source is returned.
 Otherwise,
-\fRNULL\fR
+\fRNULL\fP
 is returned and the error code in
-\fIarchive\fR
+\fIarchive\fP
 is set to indicate the error.
 .SH "ERRORS"
-\fBzip_source_zip\fR()
+zip_source_zip
 fails if:
-.TP 19n
-[\fRZIP_ER_CHANGED\fR]
+.TP 17n
+[\fRZIP_ER_CHANGED\fP]
 Unchanged data was requested, but it is not available.
-.TP 19n
-[\fRZIP_ER_INVAL\fR]
-\fIsrcarchive\fR,
-\fIsrcidx\fR,
-\fIstart\fR,
+.TP 17n
+[\fRZIP_ER_INVAL\fP]
+\fIsrcarchive\fP,
+\fIsrcidx\fP,
+\fIstart\fP,
 or
-\fIlen\fR
+\fIlen\fP
 are invalid.
-.TP 19n
-[\fRZIP_ER_MEMORY\fR]
+.TP 17n
+[\fRZIP_ER_MEMORY\fP]
 Required memory could not be allocated.
-.PD 0
-.PP
 Additionally, it can return all error codes from
-\fBzip_stat_index\fR()
+zip_stat_index
 and
-\fBzip_fopen_index\fR().
-.PD
+zip_fopen_index.
 .SH "SEE ALSO"
 libzip(3),
 zip_add(3),
 zip_replace(3),
-zip_source_buffer(3),
-zip_source_file(3),
-zip_source_filep(3),
-zip_source_free(3),
-zip_source_function(3)
+zip_source(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

@@ -3,7 +3,7 @@
 
 /*
   compat.h -- compatibility defines
-  Copyright (C) 2012 Dieter Baron and Thomas Klausner
+  Copyright (C) 2012-2014 Dieter Baron and Thomas Klausner
 
   This file is part of libzip, a library to manipulate ZIP archives.
   The authors can be contacted at <libzip@nih.at>
@@ -52,6 +52,10 @@
 #else
 #define PRIu64 "llu"
 #endif
+#endif
+
+#ifndef S_ISDIR
+#define S_ISDIR(mode)	(((mode) & S_IFMT) == S_IFDIR)
 #endif
 
 #endif

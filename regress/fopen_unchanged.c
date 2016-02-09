@@ -1,6 +1,6 @@
 /*
   fopen_unchanged.c -- test case for adding file and reading from unchanged
-  Copyright (C) 2012 Dieter Baron and Thomas Klausner
+  Copyright (C) 2012-2015 Dieter Baron and Thomas Klausner
 
   This file is part of libzip, a library to manipulate ZIP archives.
   The authors can be contacted at <libzip@nih.at>
@@ -31,7 +31,6 @@
   IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 
 #include <errno.h>
 #include <stdio.h>
@@ -47,9 +46,8 @@ int
 main(int argc, char *argv[])
 {
     const char *archive;
-    struct zip *za;
-    struct zip_source *zs;
-    char buf[100];
+    zip_t *za;
+    zip_source_t *zs;
     int err;
 
     if (argc != 2) {
@@ -60,8 +58,10 @@ main(int argc, char *argv[])
     archive = argv[1];
     
     if ((za=zip_open(archive, ZIP_CREATE, &err)) == NULL) {
-	zip_error_to_str(buf, sizeof(buf), err, errno);
-	fprintf(stderr, "can't open zip archive '%s': %s\n", archive, buf);
+	zip_error_t error;
+	zip_error_init_with_code(&error, err);
+	fprintf(stderr, "can't open zip archive '%s': %s\n", archive, zip_error_strerror(&error));
+	zip_error_fini(&error);
 	return 1;
     }
 
@@ -71,13 +71,15 @@ main(int argc, char *argv[])
     }
 
     if (zip_add(za, file, zs) == -1) {
-	zip_source_free(zs);
 	fprintf(stderr, "can't add file '%s': %s\n", file, zip_strerror(za));
+	(void)zip_source_free(zs);
+	(void)zip_close(za);
 	return 1;
     }
 
     if (zip_fopen(za, file, ZIP_FL_UNCHANGED) == NULL) {
 	fprintf(stderr, "can't zip_fopen file '%s': %s\n", file, zip_strerror(za));
+	(void)zip_discard(za);
 	return 1;
     }
 

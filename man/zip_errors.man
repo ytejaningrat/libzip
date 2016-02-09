@@ -1,100 +1,98 @@
 .TH "ZIP_ERRORS" "3" "March 10, 2009" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
 .SH "NAME"
-\fBzip_errors\fR
+\fBzip_errors\fP
 \- list of all libzip error codes
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
+zip.h
 .SH "DESCRIPTION"
 The following error codes are used by libzip:
-.TP 23n
-[\fRZIP_ER_OK\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_OK\fP]
 No error.
-.TP 23n
-[\fRZIP_ER_MULTIDISK\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_MULTIDISK\fP]
 Multi-disk zip archives not supported.
-.TP 23n
-[\fRZIP_ER_RENAME\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_RENAME\fP]
 Renaming temporary file failed.
-.TP 23n
-[\fRZIP_ER_CLOSE\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_CLOSE\fP]
 Closing zip archive failed.
-.TP 23n
-[\fRZIP_ER_SEEK\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_SEEK\fP]
 Seek error.
-.TP 23n
-[\fRZIP_ER_READ\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_READ\fP]
 Read error.
-.TP 23n
-[\fRZIP_ER_WRITE\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_WRITE\fP]
 Write error.
-.TP 23n
-[\fRZIP_ER_CRC\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_CRC\fP]
 CRC error.
-.TP 23n
-[\fRZIP_ER_ZIPCLOSED\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_ZIPCLOSED\fP]
 Containing zip archive was closed.
-.TP 23n
-[\fRZIP_ER_NOENT\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_NOENT\fP]
 No such file.
-.TP 23n
-[\fRZIP_ER_EXISTS\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_EXISTS\fP]
 File already exists.
-.TP 23n
-[\fRZIP_ER_OPEN\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_OPEN\fP]
 Can't open file.
-.TP 23n
-[\fRZIP_ER_TMPOPEN\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_TMPOPEN\fP]
 Failure to create temporary file.
-.TP 23n
-[\fRZIP_ER_ZLIB\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_ZLIB\fP]
 Zlib error.
-.TP 23n
-[\fRZIP_ER_MEMORY\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_MEMORY\fP]
 Malloc failure.
-.TP 23n
-[\fRZIP_ER_CHANGED\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_CHANGED\fP]
 Entry has been changed.
-.TP 23n
-[\fRZIP_ER_COMPNOTSUPP\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_COMPNOTSUPP\fP]
 Compression method not supported.
-.TP 23n
-[\fRZIP_ER_EOF\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_EOF\fP]
 Premature EOF.
-.TP 23n
-[\fRZIP_ER_INVAL\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_INVAL\fP]
 Invalid argument.
-.TP 23n
-[\fRZIP_ER_NOZIP\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_NOZIP\fP]
 Not a zip archive.
-.TP 23n
-[\fRZIP_ER_INTERNAL\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_INTERNAL\fP]
 Internal error.
-.TP 23n
-[\fRZIP_ER_INCONS\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_INCONS\fP]
 Zip archive inconsistent.
-.TP 23n
-[\fRZIP_ER_REMOVE\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_REMOVE\fP]
 Can't remove file.
-.TP 23n
-[\fRZIP_ER_DELETED\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_DELETED\fP]
 Entry has been deleted.
-.TP 23n
-[\fRZIP_ER_ENCRNOTSUPP\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_ENCRNOTSUPP\fP]
 Encryption method not supported.
-.TP 23n
-[\fRZIP_ER_RDONLY\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_RDONLY\fP]
 Read-only archive.
-.TP 23n
-[\fRZIP_ER_NOPASSWD\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_NOPASSWD\fP]
 No password provided.
-.TP 23n
-[\fRZIP_ER_WRONGPASSWD\fR]
+.TP XZIPXERXCOMPNOTSUPPXX
+[\fRZIP_ER_WRONGPASSWD\fP]
 Wrong password provided.
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

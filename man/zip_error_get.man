@@ -1,53 +1,65 @@
-.TH "ZIP_ERROR_GET" "3" "October 4, 2006" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
+.TH "ZIP_ERROR_GET" "3" "December 2, 2014" "NiH" "Library Functions Manual"
 .SH "NAME"
-\fBzip_error_get\fR,
-\fBzip_file_error_get\fR
+\fBzip_error_get\fP,
+\fBzip_file_error_get\fP
 \- get error codes for archive or file
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
-.sp
-\fIvoid\fR
-.br
-\fBzip_error_get\fR(\fIstruct zip *archive\fR,\ \fIint *zep\fR,\ \fIint *sep\fR);
-.sp
-\fIvoid\fR
-.br
-\fBzip_file_error_get\fR(\fIstruct zip_file *file\fR,\ \fIint *zep\fR,\ \fIint *sep\fR);
+zip.h
+void
+zip_error_get zip_t *archive int *zep int *sep
+void
+zip_file_error_get zip_file_t *file int *zep int *sep
 .SH "DESCRIPTION"
-The
-\fBzip_error_get\fR()
-function returns the error codes for the zip archive
-\fIarchive\fR.
-If
-\fIzep\fR
-is not
-\fRNULL\fR,
-\fI*zep\fR
-will be filled in with the error code from libzip.
-Similarly,
-\fI*sep\fR
-will contain the corresponding system error code, if
-\fIsep\fR
-is not
-\fRNULL\fR;
-use
-\fBzip_error_get_sys_type\fR()
-to determine the type of system error code.
+The functions
+zip_error_get
+and
+zip_file_error_get
+are deprecated.
+Use
+zip_error_code_system(3),
+zip_error_code_zip(3),
+zip_file_get_error(3),
+and
+zip_get_error(3)
+instead.
 .PP
-The
-\fBzip_file_error_get\fR()
-function does the same for the zip file
-\fIfile\fR.
+For
+zip_error_get,
+replace
+.nf
+int ze, se;
+zip_error_get(za, &ze, &se);
+.fi
+with
+.nf
+int ze, se;
+zip_error_t *error = zip_get_error(za);
+ze = zip_error_code_zip(error);
+se = zip_error_code_system(error);
+.fi
+For
+zip_file_error_get,
+replace
+.nf
+int ze, se;
+zip_file_error_get(zf, &ze, &se);
+.fi
+with
+.nf
+int ze, se;
+zip_error_t *error = zip_file_get_error(zf);
+ze = zip_error_code_zip(error);
+se = zip_error_code_system(error);
+.fi
 .SH "SEE ALSO"
 libzip(3),
-zip_error_clear(3),
-zip_error_get_sys_type(3),
-zip_error_to_str(3)
+zip_error_code_system(3),
+zip_error_code_zip(3),
+zip_file_get_error(3),
+zip_get_error(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

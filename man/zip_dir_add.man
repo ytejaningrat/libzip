@@ -1,73 +1,73 @@
-.TH "ZIP_DIR_ADD" "3" "June 23, 2012" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
+.TH "ZIP_DIR_ADD" "3" "December 4, 2014" "NiH" "Library Functions Manual"
 .SH "NAME"
-\fBzip_dir_add\fR
+\fBzip_dir_add\fP
 \- add directory to zip archive
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
-.sp
-\fIzip_int64_t\fR
-.br
-\fBzip_dir_add\fR(\fIstruct zip *archive\fR,\ \fIconst char *name\fR,\ \fIzip_flags_t flags\fR);
+zip.h
+zip_int64_t
+zip_dir_add zip_t *archive const char *name zip_flags_t flags
 .SH "DESCRIPTION"
 The function
-\fBzip_dir_add\fR()
+zip_dir_add
 adds a directory to a zip archive.
 The argument
-\fIarchive\fR
+\fIarchive\fP
 specifies the zip archive to which the directory should be added.
-\fIname\fR
+\fIname\fP
 is the directory's name in the zip archive.
 The
-\fIflags\fR
+\fIflags\fP
 argument can be any of:
-.TP 22n
-\fRZIP_FL_ENC_GUESS\fR
+.TP XZIPXFLXENCXSTRICTXX
+\fRZIP_FL_ENC_GUESS\fP
 Guess encoding of
-\fIname\fR
+\fIname\fP
 (default).
-.TP 22n
-\fRZIP_FL_ENC_UTF_8\fR
+.TP XZIPXFLXENCXSTRICTXX
+\fRZIP_FL_ENC_UTF_8\fP
 Interpret
-\fIname\fR
+\fIname\fP
 as UTF-8.
-.TP 22n
-\fRZIP_FL_ENC_CP437\fR
+.TP XZIPXFLXENCXSTRICTXX
+\fRZIP_FL_ENC_CP437\fP
 Interpret
-\fIname\fR
+\fIname\fP
 as code page 437 (CP-437).
 .SH "RETURN VALUES"
 Upon successful completion, the index of the new entry in the archive
 is returned.
 Otherwise, \-1 is returned and the error code in
-\fIarchive\fR
+\fIarchive\fP
 is set to indicate the error.
 .SH "ERRORS"
-\fBzip_dir_add\fR()
+zip_dir_add
 fails if:
-.TP 19n
-[\fRZIP_ER_EXISTS\fR]
+.TP 17n
+[\fRZIP_ER_EXISTS\fP]
 There is already an entry called
-\fIname\fR
+\fIname\fP
 in the archive.
-.TP 19n
-[\fRZIP_ER_INVAL\fR]
-\fIarchive\fR
+.TP 17n
+[\fRZIP_ER_INVAL\fP]
+\fIarchive\fP
 or
-\fIname\fR
+\fIname\fP
 are
-\fRNULL\fR,
+\fRNULL\fP,
 or invalid UTF-8 encoded file names.
-.TP 19n
-[\fRZIP_ER_MEMORY\fR]
+.TP 17n
+[\fRZIP_ER_MEMORY\fP]
 Required memory could not be allocated.
 .SH "SEE ALSO"
 libzip(3),
 zip_add(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>
+.SH "CAVEATS"
+zip_dir_add
+does not look in the file system, it just creates one entry in the
+archive for the provided name.

@@ -1,32 +1,28 @@
 .TH "ZIP_CLOSE" "3" "February 13, 2012" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
 .SH "NAME"
-\fBzip_close\fR
+\fBzip_close\fP
 \- close zip archive
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
-.sp
-\fIint\fR
-.br
-\fBzip_close\fR(\fIstruct zip *archive\fR);
+zip.h
+int
+zip_close zip_t *archive
 .SH "DESCRIPTION"
 The
-\fBzip_close\fR()
+zip_close
 function closes
-\fIarchive\fR
+\fIarchive\fP
 and frees the memory allocated for it.
 If any files within were changed, those changes are written to disk
 first.
 If writing changes fails,
-\fBzip_close\fR()
+zip_close
 fails and
-\fIarchive\fR
+\fIarchive\fP
 is left unchanged.
 If
-\fIarchive\fR
+\fIarchive\fP
 contains no files, the file is completely removed (no empty archive is
 written).
 .PP
@@ -35,54 +31,51 @@ zip_discard(3).
 .SH "RETURN VALUES"
 Upon successful completion 0 is returned.
 Otherwise, \-1 is returned and the error code in
-\fIarchive\fR
+\fIarchive\fP
 is set to indicate the error.
 .SH "ERRORS"
-\fBzip_close\fR()
+zip_close
 will fail if:
-.TP 19n
-[\fRZIP_ER_EOF\fR]
+.TP 17n
+[\fRZIP_ER_EOF\fP]
 Unexpected end-of-file found while reading from a file.
-.TP 19n
-[\fRZIP_ER_INTERNAL\fR]
+.TP 17n
+[\fRZIP_ER_INTERNAL\fP]
 The callback function of an added or replaced file returned an
 error but failed to report which.
-.TP 19n
-[\fRZIP_ER_INVAL\fR]
+.TP 17n
+[\fRZIP_ER_INVAL\fP]
 The
-\fIpath\fR
+\fIpath\fP
 argument is
-\fRNULL\fR.
-.TP 19n
-[\fRZIP_ER_MEMORY\fR]
+\fRNULL\fP.
+.TP 17n
+[\fRZIP_ER_MEMORY\fP]
 Required memory could not be allocated.
-.TP 19n
-[\fRZIP_ER_NOZIP\fR]
+.TP 17n
+[\fRZIP_ER_NOZIP\fP]
 File is not a zip archive.
-.TP 19n
-[\fRZIP_ER_READ\fR]
+.TP 17n
+[\fRZIP_ER_READ\fP]
 A file read failed.
-.TP 19n
-[\fRZIP_ER_RENAME\fR]
+.TP 17n
+[\fRZIP_ER_RENAME\fP]
 A temporary file could not be renamed to its final name.
-.TP 19n
-[\fRZIP_ER_SEEK\fR]
+.TP 17n
+[\fRZIP_ER_SEEK\fP]
 A file seek failed.
-.TP 19n
-[\fRZIP_ER_TMPOPEN\fR]
+.TP 17n
+[\fRZIP_ER_TMPOPEN\fP]
 A temporary file could not be created.
-.TP 19n
-[\fRZIP_ER_WRITE\fR]
+.TP 17n
+[\fRZIP_ER_WRITE\fP]
 A file write failed.
-.TP 19n
-[\fRZIP_ER_ZLIB\fR]
+.TP 17n
+[\fRZIP_ER_ZLIB\fP]
 An error occurred while (de)compressing a stream with
 zlib(3).
-.PD 0
-.PP
 Additionally, any errors returned by the callback function
 for added or replaced files will be passed back.
-.PD
 .SH "SEE ALSO"
 libzip(3),
 zip_discard(3),
@@ -91,6 +84,6 @@ zip_fdopen(3),
 zip_open(3),
 zip_strerror(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

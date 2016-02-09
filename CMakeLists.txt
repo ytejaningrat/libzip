@@ -2,8 +2,7 @@
 # 1. pkgconfig file not yet built.
 # 2. installation not tested.
 # 3. Problems generating html pages.
-# 4. distribution tarball not checked for unwanted/missing content.
-# 5. create usable libtool .la file
+# 4. create usable libtool .la file
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
@@ -19,9 +18,10 @@ INCLUDE(CheckStructHasMember)
 
 SET(PACKAGE "libzip")
 SET(PACKAGE_NAME ${PACKAGE})
-SET(PACKAGE_VERSION_MAJOR "0")
-SET(PACKAGE_VERSION_MINOR "11")
-SET(PACKAGE_VERSION_PATCH "2")
+SET(PACKAGE_VERSION_MAJOR "1")
+SET(PACKAGE_VERSION_MINOR "0")
+SET(PACKAGE_VERSION_PATCH "1")
+#SET(VERSION "${PACKAGE_VERSION_MAJOR}.${PACKAGE_VERSION_MINOR}")
 SET(VERSION "${PACKAGE_VERSION_MAJOR}.${PACKAGE_VERSION_MINOR}.${PACKAGE_VERSION_PATCH}")
 SET(PACKAGE_VERSION ${VERSION})
 SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
@@ -44,10 +44,10 @@ CHECK_FUNCTION_EXISTS(snprintf HAVE_SNPRINTF)
 CHECK_FUNCTION_EXISTS(strcasecmp HAVE_STRCASECMP)
 CHECK_FUNCTION_EXISTS(strdup HAVE_STRDUP)
 
-CHECK_STRUCT_HAS_MEMBER("struct tm" tm_zone time.h HAVE_STRUCT_TM_TM_ZONE)
-
 CHECK_SYMBOL_EXISTS(MoveFileExA windows.h HAVE_MOVEFILEEXA)
 
+CHECK_INCLUDE_FILES(fts.h HAVE_FTS_H)
+CHECK_INCLUDE_FILES(stdbool.h HAVE_STDBOOL_H)
 CHECK_INCLUDE_FILES(strings.h HAVE_STRINGS_H)
 CHECK_INCLUDE_FILES(unistd.h HAVE_UNISTD_H)
 
@@ -86,66 +86,23 @@ IF(MSVC)
 ADD_DEFINITIONS("-D_CRT_SECURE_NO_WARNINGS")
 ENDIF(MSVC)
 
+ADD_DEFINITIONS("-DHAVE_CONFIG_H")
+
 # Targets
 ADD_SUBDIRECTORY(lib)
 ADD_SUBDIRECTORY(man)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(regress)
-
-
-# TODO: pkgconfig file
-
-# installation
+ADD_SUBDIRECTORY(examples)
 
 # TODO: pkgconfig file
-
-# packaging
-
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "library for manipulating zip archives")
-SET(CPACK_PACKAGE_VENDOR "Dieter Baron <dillo@giga.or.at> and Thomas Klausner <tk@giga.or.at>")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-SET(CPACK_PACKAGE_VERSION_MAJOR ${PACKAGE_VERSION_MAJOR})
-SET(CPACK_PACKAGE_VERSION_MINOR ${PACKAGE_VERSION_MINOR})
-SET(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_VERSION_PATCH})
-SET(CPACK_SOURCE_PACKAGE_FILE_NAME ${PACKAGE_NAME}-${PACKAGE_VERSION})
-SET(CPACK_GENERATOR "TGZ")
-SET(CPACK_SOURCE_GENERATOR "TGZ")
-SET(CPACK_SOURCE_IGNORE_FILES
-  ".a$"
-  ".cmake$"
-  ".o$"
-  ".so$"
-  "/.deps/"
-  "/.libs/"
-  "/CMakeFiles/"
-  "/CVS/"
-  "/autom4te.cache/"
-  "/build"
-  "/broken"
-  "/docs/"
-  "AdditionalInfo.txt$"
-  "CMakeCache.txt$"
-  "Makefile$"
-  "\\\\.sh$"
-  "_CPack_"
-  "config.h$"
-  "config.log$"
-  "config.status$"
-  "html$"
-  "install_manifest.txt$"
-  "stamp-h1$"
-  "tar.bz2"
-  "tar.gz"
-  "~$"
-)
-SET(CPACK_SOURCE_STRIP_FILES "")
-INCLUDE(CPack)
 
 # write out config file
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake-config.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake-zipconf.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/zipconf.h)
+
+# installation
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zipconf.h DESTINATION lib/libzip/include)

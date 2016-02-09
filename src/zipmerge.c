@@ -1,6 +1,6 @@
 /*
   zipmerge.c -- merge zip archives
-  Copyright (C) 2004-2012 Dieter Baron and Thomas Klausner
+  Copyright (C) 2004-2014 Dieter Baron and Thomas Klausner
 
   This file is part of libzip, a library to manipulate ZIP archives.
   The authors can be contacted at <libzip@nih.at>
@@ -31,7 +31,6 @@
   IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 
 #include <ctype.h>
 #include <errno.h>
@@ -51,13 +50,12 @@
 
 #include "zip.h"
 #include "compat.h"
-
 
 char *prg;
 
 #define PROGRAM	"zipmerge"
 
-const char *usage = "usage: %s [-DhIiSsV] target-zip zip...\n";
+#define USAGE "usage: %s [-DhIiSsV] target-zip zip...\n"
 
 char help_head[] =
     PROGRAM " (" PACKAGE ") by Dieter Baron and Thomas Klausner\n\n";
@@ -74,7 +72,7 @@ char help[] = "\n\
 Report bugs to <libzip@nih.at>.\n";
 
 char version_string[] = PROGRAM " (" PACKAGE " " VERSION ")\n\
-Copyright (C) 2012 Dieter Baron and Thomas Klausner\n\
+Copyright (C) 2004-2014 Dieter Baron and Thomas Klausner\n\
 " PACKAGE " comes with ABSOLUTELY NO WARRANTY, to the extent permitted by law.\n";
 
 #define OPTIONS "hVDiIsS"
@@ -87,20 +85,19 @@ Copyright (C) 2012 Dieter Baron and Thomas Klausner\n\
 int confirm;
 zip_flags_t name_flags;
 
-static int confirm_replace(struct zip *, const char *, zip_uint64_t,
-			   struct zip *, const char *, zip_uint64_t);
-static struct zip *merge_zip(struct zip *, const char *, const char *);
+static int confirm_replace(zip_t *, const char *, zip_uint64_t,
+			   zip_t *, const char *, zip_uint64_t);
+static zip_t *merge_zip(zip_t *, const char *, const char *);
 
-
 
 int
 main(int argc, char *argv[])
 {
-    struct zip *za;
-    struct zip **zs;
+    zip_t *za;
+    zip_t **zs;
     int c, err;
     unsigned int i, n;
-    char errstr[1024], *tname;
+    char *tname;
 
     prg = argv[0];
 
@@ -129,7 +126,7 @@ main(int argc, char *argv[])
 
 	case 'h':
 	    fputs(help_head, stdout);
-	    printf(usage, prg);
+	    printf(USAGE, prg);
 	    fputs(help, stdout);
 	    exit(0);
 	case 'V':
@@ -137,13 +134,13 @@ main(int argc, char *argv[])
 	    exit(0);
 
 	default:
-	    fprintf(stderr, usage, prg);
+	    fprintf(stderr, USAGE, prg);
 	    exit(2);
 	}
     }
 
     if (argc < optind+2) {
-	fprintf(stderr, usage, prg);
+	fprintf(stderr, USAGE, prg);
 	exit(2);
     }
 
@@ -151,15 +148,16 @@ main(int argc, char *argv[])
     argv += optind;
 
     n = (unsigned int)(argc-optind);
-    if ((zs=(struct zip **)malloc(sizeof(zs[0])*n)) == NULL) {
+    if ((zs=(zip_t **)malloc(sizeof(zs[0])*n)) == NULL) {
 	fprintf(stderr, "%s: out of memory\n", prg);
 	exit(1);
     }
 
     if ((za=zip_open(tname, ZIP_CREATE, &err)) == NULL) {
-	zip_error_to_str(errstr, sizeof(errstr), err, errno);
-	fprintf(stderr, "%s: cannot open zip archive '%s': %s\n",
-		prg, tname, errstr);
+	zip_error_t error;
+	zip_error_init_with_code(&error, err);
+	fprintf(stderr, "%s: can't open zip archive '%s': %s\n", prg, tname, zip_error_strerror(&error));
+	zip_error_fini(&error);
 	exit(1);
     }
 
@@ -180,11 +178,10 @@ main(int argc, char *argv[])
     exit(0);
 }
 
-
 
 static int
-confirm_replace(struct zip *za, const char *tname, zip_uint64_t it,
-		struct zip *zs, const char *sname, zip_uint64_t is)
+confirm_replace(zip_t *za, const char *tname, zip_uint64_t it,
+		zip_t *zs, const char *sname, zip_uint64_t is)
 {
     char line[1024];
     struct zip_stat st, ss;
@@ -230,23 +227,22 @@ confirm_replace(struct zip *za, const char *tname, zip_uint64_t it,
     return 0;
 }
 
-
 
-static struct zip *
-merge_zip(struct zip *za, const char *tname, const char *sname)
+static zip_t *
+merge_zip(zip_t *za, const char *tname, const char *sname)
 {
-    struct zip *zs;
-    struct zip_source *source;
+    zip_t *zs;
+    zip_source_t *source;
     zip_int64_t ret, idx;
     zip_uint64_t i;
     int err;
-    char errstr[1024];
     const char *fname;
     
     if ((zs=zip_open(sname, 0, &err)) == NULL) {
-	zip_error_to_str(errstr, sizeof(errstr), err, errno);
-	fprintf(stderr, "%s: cannot open zip archive '%s': %s\n",
-		prg, sname, errstr);
+	zip_error_t error;
+	zip_error_init_with_code(&error, err);
+	fprintf(stderr, "%s: can't open zip archive '%s': %s\n", prg, sname, zip_error_strerror(&error));
+	zip_error_fini(&error);
 	return NULL;
     }
 

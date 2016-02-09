@@ -1,53 +1,57 @@
-.TH "ZIPCMP" "1" "June 4, 2008" "NiH" "General Commands Manual"
-.nh
-.if n .ad l
+.TH "ZIPCMP" "1" "April 29, 2015" "NiH" "General Commands Manual"
 .SH "NAME"
-\fBzipcmp\fR
+\fBzipcmp\fP
 \- compare contents of zip archives
 .SH "SYNOPSIS"
-.HP 7n
-\fBzipcmp\fR
-[\fB\-hiqVv\fR]
-\fIzip1\ zip2\fR
+\fBzipcmp\fP
+[\fB-hipqtVv\fP]
+\fIarchive1 archive2\fP
 .SH "DESCRIPTION"
-\fBzipcmp\fR
-compares the zip archives
-\fIzip1\fR
+\fBzipcmp\fP
+compares the zip archives or directories
+\fIarchive1\fP
 and
-\fIzip2\fR
+\fIarchive2\fP
 and checks if they contain the same files, comparing their names,
 uncompressed sizes, and CRCs.
 File order and compressed size differences are ignored.
 .PP
 Supported options:
-.TP 5n
-\fB\-h\fR
+.TP MMM
+\fB-h\fP
 Display a short help message and exit.
-.TP 5n
-\fB\-i\fR
+.TP MMM
+\fB-i\fP
 Compare names ignoring case distinctions.
-.TP 5n
-\fB\-q\fR
+.TP MMM
+\fB-p\fP
+Enable paranoid checks.
+Compares extra fields and other meta data.
+(Automatically disabled if one of the archives is a directory.)
+.TP MMM
+\fB-q\fP
 Quiet mode.
 Compare
-\fB\-v\fR.
-.TP 5n
-\fB\-v\fR
+\fB-v\fP.
+.TP MMM
+\fB-t\fP
+Test zip files by comparing the contents to their checksums.
+.TP MMM
+\fB-V\fP
+Display version information and exit.
+.TP MMM
+\fB-v\fP
 Verbose mode.
 Print details about differences to stdout.
 (This is the default.)
-.TP 5n
-\fB\-V\fR
-Display version information and exit.
 .SH "EXIT STATUS"
-\fBzipcmp\fR
-exits 0 if the two zip archives contain the same files, 1 if they differ,
+\fBzipcmp\fP
+exits 0 if the two archives contain the same files, 1 if they differ,
 and >1 if an error occurred.
 .SH "SEE ALSO"
 zipmerge(1),
-ziptorrent(1),
 libzip(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

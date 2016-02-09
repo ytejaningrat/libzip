@@ -1,113 +1,107 @@
 .TH "ZIP_FDOPEN" "3" "February 13, 2012" "NiH" "Library Functions Manual"
-.nh
-.if n .ad l
 .SH "NAME"
-\fBzip_fdopen\fR
+\fBzip_fdopen\fP
 \- open zip archive using open file descriptor
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-\fB#include <zip.h>\fR
-.sp
-\fIstruct\ zip\ *\fR
-.br
-\fBzip_fdopen\fR(\fIint fd\fR,\ \fIint flags\fR,\ \fIint *errorp\fR);
+zip.h
+zip_t *
+zip_fdopen int fd int flags int *errorp
 .SH "DESCRIPTION"
 The zip archive specified by the open file descriptor
-\fIfd\fR
+\fIfd\fP
 is opened and a pointer to a
-\fIstruct zip\fR,
+struct zip,
 used to manipulate the archive, is returned.
 In contrast to
 zip_open(3),
 using
-\fBzip_fdopen\fR
+\fBzip_fdopen\fP
 the archive can only be opened in read-only mode.
 The
-\fIfd\fR
+\fIfd\fP
 argument may not be used any longer after calling
-\fBzip_fdopen\fR.
+\fBzip_fdopen\fP.
 The
-\fIflags\fR
+flags
 are specified by
-\fIor\fR'ing
+\fIor\fP'ing
 the following values, or 0 for none of them.
-.RS 6n
-.TP 15n
-\fRZIP_CHECKCONS\fR
+.TP ZIP_CHECKCONS
+\fRZIP_CHECKCONS\fP
 Perform additional stricter consistency checks on the archive, and
 error if they fail.
-.RE
 .PP
 If an error occurs and
-\fIerrorp\fR
+\fIerrorp\fP
 is
-non-\fRNULL\fR,
+non-\fRNULL\fP,
 it will be set to the corresponding error code.
 .SH "RETURN VALUES"
 Upon successful completion
-\fBzip_fdopen\fR()
+zip_fdopen
 returns a
-\fIstruct zip\fR
+struct zip
 pointer, and
-\fIfd\fR
+\fIfd\fP
 should not be used any longer, nor passed to
 close(2).
 Otherwise,
-\fRNULL\fR
+\fRNULL\fP
 is returned and
-\fI*errorp\fR
+\fI*errorp\fP
 is set to indicate the error.
 In the error case,
-\fIfd\fR
+\fIfd\fP
 remains unchanged.
 .SH "ERRORS"
 The file specified by
-\fIfd\fR
+\fIfd\fP
 is prepared for use by
 libzip(3)
 unless:
-.TP 19n
-[\fRZIP_ER_INCONS\fR]
+.TP 17n
+[\fRZIP_ER_INCONS\fP]
 Inconsistencies were found in the file specified by
-\fIpath\fR.
+\fIpath\fP.
 This error is often caused by specifying
-\fRZIP_CHECKCONS\fR
+\fRZIP_CHECKCONS\fP
 but can also happen without it.
-.TP 19n
-[\fRZIP_ER_INVAL\fR]
+.TP 17n
+[\fRZIP_ER_INVAL\fP]
 The
-\fIflags\fR
+\fIflags\fP
 argument is invalid.
 Not all
 zip_open(3)
 flags are allowed for
-\fBzip_fdopen\fR,
+\fBzip_fdopen\fP,
 see
-\fIDESCRIPTION\fR.
-.TP 19n
-[\fRZIP_ER_MEMORY\fR]
+\fIDESCRIPTION\fP.
+.TP 17n
+[\fRZIP_ER_MEMORY\fP]
 Required memory could not be allocated.
-.TP 19n
-[\fRZIP_ER_NOZIP\fR]
+.TP 17n
+[\fRZIP_ER_NOZIP\fP]
 The file specified by
-\fIfd\fR
+\fIfd\fP
 is not a zip archive.
-.TP 19n
-[\fRZIP_ER_OPEN\fR]
+.TP 17n
+[\fRZIP_ER_OPEN\fP]
 The file specified by
-\fIfd\fR
+\fIfd\fP
 could not be prepared for use by
 libzip(3).
-.TP 19n
-[\fRZIP_ER_READ\fR]
+.TP 17n
+[\fRZIP_ER_READ\fP]
 A read error occurred; see
-\fIerrno\fR
+errno
 for details.
-.TP 19n
-[\fRZIP_ER_SEEK\fR]
+.TP 17n
+[\fRZIP_ER_SEEK\fP]
 The file specified by
-\fIfd\fR
+\fIfd\fP
 does not allow seeks.
 .SH "SEE ALSO"
 libzip(3),
@@ -115,6 +109,6 @@ zip_close(3),
 zip_error_to_str(3),
 zip_open(3)
 .SH "AUTHORS"
-Dieter Baron <\fIdillo@nih.at\fR>
+Dieter Baron <dillo@nih.at>
 and
-Thomas Klausner <\fItk@giga.or.at\fR>
+Thomas Klausner <tk@giga.or.at>

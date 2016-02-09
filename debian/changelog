@@ -1,3 +1,11 @@
+libzip (1.0.1-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Upload Ubuntu version to Debian
+  * Bump standards version.
+
+ -- Hans-Christoph Steiner <hans@eds.org>  Tue, 09 Feb 2016 20:48:46 +0100
+
 libzip (1.0.1-0ubuntu1) wily; urgency=medium
 
   * New upstream version.

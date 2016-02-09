@@ -1,5 +1,5 @@
 .\" zip_source_function.mdoc -- create data source from function
-.\" Copyright (C) 2004-2009 Dieter Baron and Thomas Klausner
+.\" Copyright (C) 2004-2013 Dieter Baron and Thomas Klausner
 .\"
 .\" This file is part of libzip, a library to manipulate ZIP archives.
 .\" The authors can be contacted at <libzip@nih.at>
@@ -29,7 +29,7 @@
 .\" OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 .\" IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.Dd March 30, 2009
+.Dd September 22, 2013
 .Dt ZIP_SOURCE_FUNCTION 3
 .Os
 .Sh NAME
@@ -84,14 +84,18 @@ Return 0.
 .It Dv ZIP_SOURCE_STAT
 Get meta information for the input data.
 .Ar data
-points to an initialized
+points to an allocated
 .Vt struct zip_stat ,
-which should be filled in.
-(See
-.Xr zip_stat_init 3 . )
+which should be initialized using
+.Xr zip_stat_init 3
+and then filled in.
 Information only available after the source has been read (e.g. size)
 can be omitted in an earlier call.
 Return sizeof(struct zip_stat) on success, \-1 on error.
+.Em NOTE :
+.Fn zip_source_function
+may be called with this argument even after being called with
+.Dv ZIP_SOURCE_CLOSE .
 .It Dv ZIP_SOURCE_ERROR
 Get error information.
 .Ar data
@@ -158,6 +162,6 @@ Required memory could not be allocated.
 .Xr zip_stat_init 3
 .Sh AUTHORS
 .An -nosplit
-.An Dieter Baron Aq dillo@nih.at
+.An Dieter Baron Aq Mt dillo@nih.at
 and
-.An Thomas Klausner Aq tk@giga.or.at
+.An Thomas Klausner Aq Mt tk@giga.or.at

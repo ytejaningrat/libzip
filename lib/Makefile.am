@@ -1,9 +1,10 @@
+AM_CFLAGS=	@CFLAG_VISIBILITY@
 libincludedir = ${libdir}/@PACKAGE@/include
 
 lib_LTLIBRARIES = libzip.la
 noinst_HEADERS = zipint.h
 include_HEADERS = zip.h
-libinclude_HEADERS = zipconf.h
+nodist_libinclude_HEADERS = zipconf.h
 
 # also update CMakeLists.txt when changing version
 libzip_la_LDFLAGS=-no-undefined -version-info 3:0:1
@@ -12,11 +13,13 @@ libzip_la_LIBADD=@LTLIBOBJS@
 libzip_la_SOURCES=\
 	zip_add.c \
 	zip_add_dir.c \
+	zip_add_entry.c \
 	zip_close.c \
 	zip_delete.c \
+	zip_dir_add.c \
 	zip_dirent.c \
-	zip_entry_free.c \
-	zip_entry_new.c \
+	zip_discard.c \
+	zip_entry.c \
 	zip_err_str.c \
 	zip_error.c \
 	zip_error_clear.c \
@@ -24,11 +27,20 @@ libzip_la_SOURCES=\
 	zip_error_get_sys_type.c \
 	zip_error_strerror.c \
 	zip_error_to_str.c \
+	zip_extra_field.c \
+	zip_extra_field_api.c \
 	zip_fclose.c \
 	zip_fdopen.c \
+	zip_file_add.c \
 	zip_file_error_clear.c \
 	zip_file_error_get.c \
+	zip_file_get_comment.c \
+	zip_file_get_external_attributes.c \
 	zip_file_get_offset.c \
+	zip_file_rename.c \
+	zip_file_replace.c \
+	zip_file_set_comment.c \
+	zip_file_set_external_attributes.c \
 	zip_file_strerror.c \
 	zip_filerange_crc.c \
 	zip_fopen.c \
@@ -36,13 +48,11 @@ libzip_la_SOURCES=\
 	zip_fopen_index.c \
 	zip_fopen_index_encrypted.c \
 	zip_fread.c \
-	zip_free.c \
 	zip_get_archive_comment.c \
 	zip_get_archive_flag.c \
 	zip_get_compression_implementation.c \
 	zip_get_encryption_implementation.c \
 	zip_get_file_comment.c \
-	zip_get_file_extra.c \
 	zip_get_num_entries.c \
 	zip_get_num_files.c \
 	zip_get_name.c \
@@ -56,7 +66,8 @@ libzip_la_SOURCES=\
 	zip_set_archive_flag.c \
 	zip_set_default_password.c \
 	zip_set_file_comment.c \
-	zip_set_file_extra.c \
+	zip_set_file_compression.c \
+	zip_set_name.c \
 	zip_source_buffer.c \
 	zip_source_close.c \
 	zip_source_crc.c \
@@ -72,18 +83,21 @@ libzip_la_SOURCES=\
 	zip_source_pop.c \
 	zip_source_read.c \
 	zip_source_stat.c \
+	zip_source_window.c \
 	zip_source_zip.c \
-	zip_set_name.c \
+	zip_source_zip_new.c \
 	zip_stat.c \
 	zip_stat_index.c \
 	zip_stat_init.c \
 	zip_strerror.c \
+	zip_string.c \
 	zip_unchange.c \
 	zip_unchange_all.c \
 	zip_unchange_archive.c \
-	zip_unchange_data.c
+	zip_unchange_data.c \
+	zip_utf-8.c
 
-BUILT_SOURCES=zip_err_str.c zipconf.h
+BUILT_SOURCES=zipconf.h
 CLEANFILES=	${BUILT_SOURCES}
 
 EXTRA_DIST=	CMakeLists.txt \

@@ -3,7 +3,7 @@
 #  from ckmame:runtest,v 1.22 2005/12/27 09:41:51 dillo Exp
 #
 #  runtest -- run regression tests
-#  Copyright (C) 2002-2007 Dieter Baron and Thomas Klausner
+#  Copyright (C) 2002-2012 Dieter Baron and Thomas Klausner
 #
 #  This file is part of libzip, a library to manipulate ZIP archives.
 #  The authors can be contacted at <libzip@nih.at>
@@ -63,6 +63,9 @@
 #	mkdir MODE NAME
 #	    create directory NAME with permissions MODE.
 #
+#	pipein PRG ARGS ...
+#	    execute PRG ARGS ... and pipe output to test program.
+#
 #	program PRG
 #	    run PRG.
 #
@@ -78,6 +81,8 @@
 #	    program is expected to print TEXT to stdout.  If multiple
 #	    stdout commands are used, the messages are expected in
 #	    the order given. 
+#
+#
 #   
 # exit status
 #	runtest uses the following exit codes:
@@ -171,8 +176,7 @@ checkfile() {
 
 checkzip() {
     check_in_out_exists "$1" "$2"
-    # quiet CRC errors
-    ${ZIPCMP} -t ${ZIPCMP_FLAGS} "$1" "$2" 2>/dev/null
+    ${ZIPCMP} ${ZIPCMP_FLAGS} "$1" "$2" 2>/dev/null
     if [ $? -ne 0 ]
     then
 	fail "$3"
@@ -194,7 +198,7 @@ test_set() {
 }
 
 copy_file() {
-    src="${srcdir}/$1"
+    src="$1"
 
     if [ ! -f "$src" ]
     then
@@ -208,6 +212,17 @@ copy_file() {
     cp "$src" "$2"
 }
 
+find_input_file() {
+    if [ -f "../$1" ]
+    then
+	src_file="../$1"
+    else
+	src_file="${srcdir}/$1"
+    fi
+
+    echo "$src_file"
+}
+
 # GNU sort behaves differently on locales other than C, breaking tests
 LC_ALL=C
 export LC_ALL
@@ -216,12 +231,12 @@ export LC_ALL
 TEST=`echo $1 | sed -e s',.*/,,' -e 's/\.test$//'`
 shift
 
-DIR=${TEST}.d$$
+DIR=sandbox.${TEST}.d$$
 if [ -z "${srcdir}" ]
 then
     srcdir=..
 else
-    # XXX: fix for absolute srcdir?
+    # TODO: fix for absolute srcdir?
     srcdir=../${srcdir}
 fi
 
@@ -235,6 +250,7 @@ else
     fi
 fi
 
+VERBOSE=1
 if [ -z "${VERBOSE}" ]
 then
     DIFF_FLAGS=''
@@ -243,8 +259,9 @@ else
     DIFF_FLAGS='-u'
     ZIPCMP_FLAGS='-v'
 fi
+ZIPCMP_FLAGS="$ZIPCMP_FLAGS -p -t"
 
-# XXX: set up trap to cleanup
+# TODO: set up trap to cleanup
 
 mkdir ${DIR} || ( die "cannot create test directory ${DIR}" )
 cd ${DIR} || ( die "cannot cd to test directory ${DIR}" )
@@ -256,6 +273,7 @@ ARGS=''
 FILES=''
 FILES_SHOULD=''
 DESCR=''
+PIPEIN=''
 
 touch stderr stdout
 
@@ -271,24 +289,31 @@ do
     DESCR="$arg";;
   file)
     set $arg
-    copy_file "$2" "$1"
-    FILES="${FILES} ${srcdir}/$3!$1";;
+    in_file=`find_input_file "$2"`
+    out_file=`find_input_file "$3"`
+    copy_file "${in_file}" "$1"
+    FILES="${FILES} ${out_file}!$1";;
   file-del)
     set $arg
-    copy_file "$2" "$1";;
+    src_file=`find_input_file "$2"`
+    copy_file "${src_file}" "$1";;
   file-new)
     set $arg
-    FILES="${FILES} ${srcdir}/$2!$1";;
+    src_file=`find_input_file "$2"`
+    FILES="${FILES} ${src_file}!$1";;
   mkdir)
     set $arg
     mkdir "$2" && chmod "$1" "$2";;
+  pipein)
+    test_empty "${PIPEIN}" pipein
+    PIPEIN="$arg";;
   program)
     PROGRAM=../"$arg";;
   return)
     test_empty "${RET}" return
     RET="$arg";;
   stderr)
-    echo "${PROGRAM}: $arg" >> stderr;;
+    echo "$arg" >> stderr;;
   stdout)
     echo "$arg" >> stdout;;
   *)
@@ -312,11 +337,16 @@ fi
 
 if [ ! -z "${VERBOSE}" ]
 then
-	echo "${TEST}: ${DESCR}"
-	echo "running: ${PROGRAM} ${ARGS}"
+    echo "${TEST}: ${DESCR}"
+    echo "running: ${PROGRAM} ${ARGS}"
 fi
 
-${PROGRAM} ${ARGS} > gotout 2> goterr
+if [ ! -z "${PIPEIN}" ]
+then
+    ${PIPEIN} | ${PROGRAM} ${ARGS} > gotout 2> goterr
+else
+    ${PROGRAM} ${ARGS} > gotout 2> goterr
+fi
 ret=$?
 
 if [ $ret -ne ${RET} ]

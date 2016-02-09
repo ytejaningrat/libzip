@@ -1,11 +1,36 @@
-0.10.1 [2012/03/20]
+0.11.2 [2013/12/19]
 
+* Support querying/setting operating system and external attributes.
+* For newly added files, set operating system to UNIX, permissions
+  to 0666 (0777 for directories).
+* Fix bug when writing zip archives containing files bigger than 4GB.
+
+0.11.1 [2013/04/27]
+
+* Fix bugs in zip_set_file_compression().
+* Include Xcode build infrastructure.
+
+0.11 [2013/03/23]
+
+* Added Zip64 support (large file support)
+* Added UTF-8 support for file names, file comments, and archive comments
+* Changed API for name and comment related functions for UTF-8 support
+* Added zip_discard()
+* Added ZIP_TRUNCATE for zip_open()
+* Added zip_set_file_compression()
+* Added API for accessing and modifying extra fields
+* Improved API type consistency
+* Use gcc4's visibility __attribute__
+* More changes for Windows support
+* Additional test cases
+
+0.10.1 [2012/03/20]
 * Fixed CVE-2012-1162
 * Fixed CVE-2012-1163
 
 0.10 [2010/03/18]
 
-* Added zip_get_num_files(), deprecated zip_get_num_entries().
+* Added zip_get_num_entries(), deprecated zip_get_num_files().
 * Better windows support.
 * Support for traditional PKWARE encryption added.
 * Fix opening archives with more than 65535 entries.

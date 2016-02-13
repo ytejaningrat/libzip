@@ -1,73 +1,85 @@
 .TH "ZIP_FILE_EXTRA_FIELDS_COUNT" "3" "February 20, 2013" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_file_extra_fields_count\fP,
-\fBzip_file_extra_fields_count_by_id\fP
+\fBzip_file_extra_fields_count\fR,
+\fBzip_file_extra_fields_count_by_id\fR
 \- count extra fields for file in zip
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-zip_int16_t
-zip_file_extra_fields_count zip_t *archive zip_uint64_t index zip_flags_t flags
-zip_int16_t
-zip_file_extra_fields_count_by_id zip_t *archive zip_uint64_t index zip_uint16_t extra_field_id zip_flags_t flags
+\fB#include <zip.h>\fR
+.sp
+\fIzip_int16_t\fR
+.PD 0
+.HP 4n
+\fBzip_file_extra_fields_count\fR(\fIzip_t\ *archive\fR, \fIzip_uint64_t\ index\fR, \fIzip_flags_t\ flags\fR);
+.PD
+.PP
+\fIzip_int16_t\fR
+.PD 0
+.HP 4n
+\fBzip_file_extra_fields_count_by_id\fR(\fIzip_t\ *archive\fR, \fIzip_uint64_t\ index\fR, \fIzip_uint16_t\ extra_field_id\fR, \fIzip_flags_t\ flags\fR);
+.PD
 .SH "DESCRIPTION"
 The
-zip_file_extra_fields_count
+\fBzip_file_extra_fields_count\fR()
 function counts the extra fields for the file at position
-\fIindex\fP
+\fIindex\fR
 in the zip archive.
 .PP
 The following
-\fIflags\fP
+\fIflags\fR
 are supported:
-.TP ZIP_FL_CENTRALXX
-\fRZIP_FL_CENTRAL\fP
+.RS 6n
+.TP 18n
+\fRZIP_FL_CENTRAL\fR
 Count extra fields from the archive's central directory.
-.TP ZIP_FL_CENTRALXX
-\fRZIP_FL_LOCAL\fP
+.TP 18n
+\fRZIP_FL_LOCAL\fR
 Count extra fields from the local file headers.
-.TP ZIP_FL_CENTRALXX
-\fRZIP_FL_UNCHANGED\fP
+.TP 18n
+\fRZIP_FL_UNCHANGED\fR
 Count the original unchanged extra fields, ignoring any changes made.
+.RE
 .PP
 The
-zip_file_extra_fields_count_by_id
+\fBzip_file_extra_fields_count_by_id\fR()
 function counts the extra fields with ID (two-byte signature)
-\fIextra_field_id\fP.
+\fIextra_field_id\fR.
 The other arguments are the same as for
-zip_file_extra_fields_count.
+\fBzip_file_extra_fields_count\fR().
 .PP
 Extra fields that are the same in the central directory and the local file
 header are merged into one.
 Therefore, the counts with
-\fRZIP_FL_CENTRAL\fP
+\fRZIP_FL_CENTRAL\fR
 and
-\fRZIP_FL_LOCAL\fP
+\fRZIP_FL_LOCAL\fR
 do not need to add up to the same value as when given
-\fRZIP_FL_CENTRAL|ZIP_FL_LOCAL\fP
+\fRZIP_FL_CENTRAL|ZIP_FL_LOCAL\fR
 at the same time.
 .SH "RETURN VALUES"
 Upon successful completion, the requested number of extra fields is returned.
 Otherwise, \-1 is returned and the error code in
-\fIarchive\fP
+\fIarchive\fR
 is set to indicate the error.
 .SH "ERRORS"
-zip_file_extra_fields_count
+\fBzip_file_extra_fields_count\fR()
 and
-zip_file_extra_fields_count_by_id
+\fBzip_file_extra_fields_count_by_id\fR()
 fail if:
-.TP 17n
-[\fRZIP_ER_NOENT\fP]
-\fIindex\fP
+.TP 19n
+[\fRZIP_ER_NOENT\fR]
+\fIindex\fR
 is not a valid file index in
-\fIarchive\fP.
+\fIarchive\fR.
 .SH "SEE ALSO"
 libzip(3),
 zip_file_extra_field_delete(3),
 zip_file_extra_field_get(3),
 zip_file_extra_field_set(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

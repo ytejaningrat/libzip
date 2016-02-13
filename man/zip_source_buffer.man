@@ -1,54 +1,64 @@
 .TH "ZIP_SOURCE_BUFFER" "3" "October 17, 2014" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_source_buffer\fP
+\fBzip_source_buffer\fR
 \- create zip data source from buffer
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-zip_source_t *
-zip_source_buffer zip_t *archive const void *data zip_uint64_t len int freep
-zip_source_t *
-zip_source_buffer_create const void *data zip_uint64_t len int freep zip_error_t *error
+\fB#include <zip.h>\fR
+.sp
+\fIzip_source_t *\fR
+.PD 0
+.HP 4n
+\fBzip_source_buffer\fR(\fIzip_t\ *archive\fR, \fIconst\ void\ *data\fR, \fIzip_uint64_t\ len\fR, \fIint\ freep\fR);
+.PD
+.PP
+\fIzip_source_t *\fR
+.PD 0
+.HP 4n
+\fBzip_source_buffer_create\fR(\fIconst\ void\ *data\fR, \fIzip_uint64_t\ len\fR, \fIint\ freep\fR, \fIzip_error_t\ *error\fR);
+.PD
 .SH "DESCRIPTION"
 The functions
-zip_source_buffer
+\fBzip_source_buffer\fR()
 and
-zip_source_buffer_create
+\fBzip_source_buffer_create\fR()
 create a zip source from the buffer
-\fIdata\fP
+\fIdata\fR
 of size
-\fIlen\fP.
+\fIlen\fR.
 If
-\fIfreep\fP
+\fIfreep\fR
 is non-zero, the buffer will be freed when it is no longer needed.
-\fIdata\fP
+\fIdata\fR
 must remain valid for the lifetime of the created source.
 .PP
 The source can be used to open a zip archive from.
 .SH "RETURN VALUES"
 Upon successful completion, the created source is returned.
 Otherwise,
-\fRNULL\fP
+\fRNULL\fR
 is returned and the error code in
-\fIarchive\fP
+\fIarchive\fR
 or
-\fIerror\fP
+\fIerror\fR
 is set to indicate the error.
 .SH "ERRORS"
-zip_source_buffer
+\fBzip_source_buffer\fR()
 and
-zip_source_buffer_create
+\fBzip_source_buffer_create\fR()
 fail if:
-.TP 17n
-[\fRZIP_ER_INVAL\fP]
-\fIlen\fP
+.TP 19n
+[\fRZIP_ER_INVAL\fR]
+\fIlen\fR
 is greater than zero and
-\fIdata\fP
+\fIdata\fR
 is
-\fRNULL\fP.
-.TP 17n
-[\fRZIP_ER_MEMORY\fP]
+\fRNULL\fR.
+.TP 19n
+[\fRZIP_ER_MEMORY\fR]
 Required memory could not be allocated.
 .SH "SEE ALSO"
 libzip(3),
@@ -57,6 +67,6 @@ zip_open_from_source(3),
 zip_replace(3),
 zip_source(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

@@ -1,41 +1,47 @@
 .TH "ZIP_SOURCE_GET_ARGS" "3" "October 30, 2014" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBZIP_SOURCE_GET_ARGS\fP
+\fBZIP_SOURCE_GET_ARGS\fR
 \- validate and cast arguments to source callback
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-type *
-ZIP_SOURCE_GET_ARGS type void *data zip_uint64_t len zip_error_t *error
+\fB#include <zip.h>\fR
+.sp
+\fItype *\fR
+.PD 0
+.HP 4n
+\fBZIP_SOURCE_GET_ARGS\fR(\fItype\fR, \fIvoid\ *data\fR, \fIzip_uint64_t\ len\fR, \fIzip_error_t\ *error\fR);
+.PD
 .SH "DESCRIPTION"
 The
-ZIP_SOURCE_GET_ARGS
+\fBZIP_SOURCE_GET_ARGS\fR()
 macro casts
-\fIdata\fP
+\fIdata\fR
 to a pointer to
-\fItype\fP.
+\fItype\fR.
 .SH "RETURN VALUES"
 On success,
-ZIP_SOURCE_GET_ARGS
+\fBZIP_SOURCE_GET_ARGS\fR()
 returns
-\fIdata\fP.
+\fIdata\fR.
 In case of error, it returns
-\fRNULL\fP
+\fRNULL\fR
 and sets
-\fIerror\fP.
+\fIerror\fR.
 .SH "ERRORS"
-ZIP_SOURCE_GET_ARGS
+\fBZIP_SOURCE_GET_ARGS\fR()
 fails if:
-.TP 17n
-[\fRZIP_ER_INVAL\fP]
-\fIlen\fP
+.TP 19n
+[\fRZIP_ER_INVAL\fR]
+\fIlen\fR
 is less than the size of
-\fItype\fP
+\fItype\fR
 .SH "SEE ALSO"
 libzip(3),
 zip_source_function(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

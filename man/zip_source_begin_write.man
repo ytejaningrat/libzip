@@ -1,24 +1,30 @@
 .TH "ZIP_SOURCE_BEGIN_WRITE" "3" "November 18, 2014" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_source_begin_write\fP
+\fBzip_source_begin_write\fR
 \- prepare zip source for writing
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-int
-zip_source_begin_write zip_source_t *source
+\fB#include <zip.h>\fR
+.sp
+\fIint\fR
+.PD 0
+.HP 4n
+\fBzip_source_begin_write\fR(\fIzip_source_t\ *source\fR);
+.PD
 .SH "DESCRIPTION"
 The function
-zip_source_begin_write
+\fBzip_source_begin_write\fR()
 prepares
-source
+\fIsource\fR
 for writing.
 Usually this involves creating temporary files or allocating buffers.
 .SH "RETURN VALUES"
 Upon successful completion 0 is returned.
 Otherwise, \-1 is returned and the error information in
-\fIsource\fP
+\fIsource\fR
 is set to indicate the error.
 .SH "SEE ALSO"
 libzip(3),
@@ -29,6 +35,6 @@ zip_source_seek_write(3),
 zip_source_tell_write(3),
 zip_source_write(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

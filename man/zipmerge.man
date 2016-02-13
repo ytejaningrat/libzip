@@ -1,56 +1,60 @@
-.TH "ZIPMERGE" "1" "April 29, 2015" "NiH" "General Commands Manual"
+.TH "ZIPMERGE" "1" "January 19, 2016" "NiH" "General Commands Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzipmerge\fP
+\fBzipmerge\fR
 \- merge zip archives
 .SH "SYNOPSIS"
-\fBzipmerge\fP
-[\fB-DhIiSsV\fP]
-\fItarget-zip\fP
-\fIsource-zip\fP [\fIsource-zip ...\fP]
+.HP 9n
+\fBzipmerge\fR
+[\fB\-DhIiSsV\fR]
+\fItarget-zip\fR
+\fIsource-zip\fR\ [\fIsource-zip\ ...\fR]
 .SH "DESCRIPTION"
-\fBzipmerge\fP
+\fBzipmerge\fR
 merges the source zip archives
-\fIsource-zip\fP
+\fIsource-zip\fR
 into the target zip archive
-\fItarget-zip\fP.
+\fItarget-zip\fR.
 By default, files in the source zip archives overwrite
 existing files of the same name in the target zip archive.
 .PP
 Supported options:
-.TP MMM
-\fB-D\fP
+.TP 5n
+\fB\-D\fR
 Ignore directory components in file name comparisons.
-.TP MMM
-\fB-h\fP
+.TP 5n
+\fB\-h\fR
 Display a short help message and exit.
-.TP MMM
-\fB-I\fP
+.TP 5n
+\fB\-I\fR
 Ignore case in file name comparisons
-.TP MMM
-\fB-i\fP
+.TP 5n
+\fB\-i\fR
 Ask before overwriting files.
 See also
-\fB-s\fP.
-.TP MMM
-\fB-S\fP
+\fB\-s\fR.
+.TP 5n
+\fB\-S\fR
 Do not overwrite files that have the same size and
 CRC32 in both the source and target archives.
-.TP MMM
-\fB-s\fP
+.TP 5n
+\fB\-s\fR
 When
-\fB-i\fP
+\fB\-i\fR
 is given, do not before overwriting files that have the same size
 and CRC32.
-.TP MMM
-\fB-V\fP
+.TP 5n
+\fB\-V\fR
 Display version information and exit.
 .SH "EXIT STATUS"
-\fBzipmerge\fP
+\fBzipmerge\fR
 exits 0 on success and >1 if an error occurred.
 .SH "SEE ALSO"
 zipcmp(1),
+ziptool(1),
 libzip(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

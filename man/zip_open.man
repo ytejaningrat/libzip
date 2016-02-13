@@ -1,134 +1,146 @@
 .TH "ZIP_OPEN" "3" "November 9, 2014" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_open\fP,
-\fBzip_open_from_source\fP
+\fBzip_open\fR,
+\fBzip_open_from_source\fR
 \- open zip archive
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-zip_t *
-zip_open const char *path int flags int *errorp
-zip_t *
-zip_open_from_source zip_source_t *zs int flags zip_error_t *ze
+\fB#include <zip.h>\fR
+.sp
+\fIzip_t *\fR
+.PD 0
+.HP 4n
+\fBzip_open\fR(\fIconst\ char\ *path\fR, \fIint\ flags\fR, \fIint\ *errorp\fR);
+.PD
+.PP
+\fIzip_t *\fR
+.PD 0
+.HP 4n
+\fBzip_open_from_source\fR(\fIzip_source_t\ *zs\fR, \fIint\ flags\fR, \fIzip_error_t\ *ze\fR);
+.PD
 .SH "DESCRIPTION"
 The
-zip_open
+\fBzip_open\fR()
 function opens the zip archive specified by
-\fIpath\fP
+\fIpath\fR
 and returns a pointer to a
-struct zip,
+\fIstruct zip\fR,
 used to manipulate the archive.
 The
-flags
+\fIflags\fR
 are specified by
-\fIor\fP'ing
+\fIor\fR'ing
 the following values, or 0 for none of them.
-.TP ZIP_CHECKCONS
-\fRZIP_CHECKCONS\fP
+.RS 6n
+.TP 15n
+\fRZIP_CHECKCONS\fR
 Perform additional stricter consistency checks on the archive, and
 error if they fail.
-.TP ZIP_CHECKCONS
-\fRZIP_CREATE\fP
+.TP 15n
+\fRZIP_CREATE\fR
 Create the archive if it does not exist.
-.TP ZIP_CHECKCONS
-\fRZIP_EXCL\fP
+.TP 15n
+\fRZIP_EXCL\fR
 Error if archive already exists.
-.TP ZIP_CHECKCONS
-\fRZIP_TRUNCATE\fP
+.TP 15n
+\fRZIP_TRUNCATE\fR
 If archive exists, ignore its current contents.
 In other words, handle it the same way as an empty archive.
-.TP ZIP_CHECKCONS
-\fRZIP_RDONLY\fP
+.TP 15n
+\fRZIP_RDONLY\fR
 Open archive in read-only mode.
+.RE
 .PP
 If an error occurs and
-\fIerrorp\fP
+\fIerrorp\fR
 is
-non-\fRNULL\fP,
+non-\fRNULL\fR,
 it will be set to the corresponding error code.
 .PP
 The
-zip_open_from_source
+\fBzip_open_from_source\fR()
 function opens a zip archive encapsulated by the zip_source
-zs
+\fIzs\fR
 using the provided
-flags.
+\fIflags\fR.
 In case of error, the zip_error
-ze
+\fIze\fR
 is filled in.
 .SH "RETURN VALUES"
 Upon successful completion
-zip_open
+\fBzip_open\fR()
 and
-zip_open_from_source
+\fBzip_open_from_source\fR()
 return a
-struct zip
+\fIstruct zip\fR
 pointer.
 Otherwise,
-\fRNULL\fP
+\fRNULL\fR
 is returned and
-zip_open
+\fBzip_open\fR()
 sets
-\fI*errorp\fP
+\fI*errorp\fR
 to indicate the error, while
-zip_open_from source
+\fBzip_open_from\fR(\fIsource\fR)
 sets
-\fIze\fP
+\fIze\fR
 to indicate the error.
 .SH "ERRORS"
 The archive specified by
-\fIpath\fP
+\fIpath\fR
 is opened unless:
-.TP 17n
-[\fRZIP_ER_EXISTS\fP]
+.TP 19n
+[\fRZIP_ER_EXISTS\fR]
 The file specified by
-\fIpath\fP
+\fIpath\fR
 exists and
-\fRZIP_EXCL\fP
+\fRZIP_EXCL\fR
 is set.
-.TP 17n
-[\fRZIP_ER_INCONS\fP]
+.TP 19n
+[\fRZIP_ER_INCONS\fR]
 Inconsistencies were found in the file specified by
-\fIpath\fP.
+\fIpath\fR.
 This error is often caused by specifying
-\fRZIP_CHECKCONS\fP
+\fRZIP_CHECKCONS\fR
 but can also happen without it.
-.TP 17n
-[\fRZIP_ER_INVAL\fP]
+.TP 19n
+[\fRZIP_ER_INVAL\fR]
 The
-\fIpath\fP
+\fIpath\fR
 argument is
-\fRNULL\fP.
-.TP 17n
-[\fRZIP_ER_MEMORY\fP]
+\fRNULL\fR.
+.TP 19n
+[\fRZIP_ER_MEMORY\fR]
 Required memory could not be allocated.
-.TP 17n
-[\fRZIP_ER_NOENT\fP]
+.TP 19n
+[\fRZIP_ER_NOENT\fR]
 The file specified by
-\fIpath\fP
+\fIpath\fR
 does not exist and
-\fRZIP_CREATE\fP
+\fRZIP_CREATE\fR
 is not set.
-.TP 17n
-[\fRZIP_ER_NOZIP\fP]
+.TP 19n
+[\fRZIP_ER_NOZIP\fR]
 The file specified by
-\fIpath\fP
+\fIpath\fR
 is not a zip archive.
-.TP 17n
-[\fRZIP_ER_OPEN\fP]
+.TP 19n
+[\fRZIP_ER_OPEN\fR]
 The file specified by
-\fIpath\fP
+\fIpath\fR
 could not be opened.
-.TP 17n
-[\fRZIP_ER_READ\fP]
+.TP 19n
+[\fRZIP_ER_READ\fR]
 A read error occurred; see
-errno
+\fIerrno\fR
 for details.
-.TP 17n
-[\fRZIP_ER_SEEK\fP]
+.TP 19n
+[\fRZIP_ER_SEEK\fR]
 The file specified by
-\fIpath\fP
+\fIpath\fR
 does not allow seeks.
 .SH "SEE ALSO"
 libzip(3),
@@ -136,6 +148,6 @@ zip_close(3),
 zip_error_to_str(3),
 zip_fdopen(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

@@ -44,9 +44,6 @@
 /* Define to 1 if you have the `mkstemp' function. */
 #define HAVE_MKSTEMP 1
 
-/* Define to 1 if you have the `MoveFileExA' function. */
-/* #undef HAVE_MOVEFILEEXA */
-
 /* Define to 1 if you have the `open' function. */
 #define HAVE_OPEN 1
 
@@ -151,7 +148,7 @@
 #define PACKAGE_NAME "libzip"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "libzip 1.0.1"
+#define PACKAGE_STRING "libzip 1.0.1a"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "libzip"
@@ -160,7 +157,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.0.1"
+#define PACKAGE_VERSION "1.0.1a"
 
 /* The size of `int', as computed by sizeof. */
 #define SIZEOF_INT 4
@@ -195,7 +192,7 @@
 /* #undef TM_IN_SYS_TIME */
 
 /* Version number of package */
-#define VERSION "1.0.1"
+#define VERSION "1.0.1a"
 
 /* Enable large inode numbers on Mac OS X 10.5.  */
 #ifndef _DARWIN_USE_64_BIT_INODE

@@ -7,6 +7,9 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
+/* Define to 1 if you have the `fileno' function. */
+#undef HAVE_FILENO
+
 /* Define to 1 if you have the `fseeko' function. */
 #undef HAVE_FSEEKO
 
@@ -18,6 +21,9 @@
 
 /* Define to 1 if you have the `getopt' function. */
 #undef HAVE_GETOPT
+
+/* Define to 1 if you have the `getprogname' function. */
+#undef HAVE_GETPROGNAME
 
 /* Define to 1 if the system has the type `int16_t'. */
 #undef HAVE_INT16_T
@@ -43,11 +49,11 @@
 /* Define to 1 if you have the `mkstemp' function. */
 #undef HAVE_MKSTEMP
 
-/* Define to 1 if you have the `MoveFileExA' function. */
-#undef HAVE_MOVEFILEEXA
-
 /* Define to 1 if you have the `open' function. */
 #undef HAVE_OPEN
+
+/* Define to 1 if you have the `setmode' function. */
+#undef HAVE_SETMODE
 
 /* Define to 1 if you have the `snprintf' function. */
 #undef HAVE_SNPRINTF
@@ -69,6 +75,9 @@
 
 /* Define to 1 if you have the `strdup' function. */
 #undef HAVE_STRDUP
+
+/* Define to 1 if you have the `stricmp' function. */
+#undef HAVE_STRICMP
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
@@ -127,6 +136,9 @@
 /* Define to 1 if you have the `_open' function. */
 #undef HAVE__OPEN
 
+/* Define to 1 if you have the `_setmode' function. */
+#undef HAVE__SETMODE
+
 /* Define to 1 if you have the `_snprintf' function. */
 #undef HAVE__SNPRINTF
 
@@ -135,6 +147,9 @@
 
 /* Define to 1 if you have the `_stricmp' function. */
 #undef HAVE__STRICMP
+
+/* Define if libc defines __progname */
+#undef HAVE___PROGNAME
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */

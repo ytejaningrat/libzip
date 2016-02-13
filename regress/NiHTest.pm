@@ -5,7 +5,7 @@ use warnings;
 
 use Cwd;
 use File::Copy;
-use File::Path qw(mkpath);
+use File::Path qw(mkpath remove_tree);
 use IPC::Open3;
 use Symbol 'gensym';
 use UNIVERSAL;
@@ -13,7 +13,7 @@ use UNIVERSAL;
 use Data::Dumper qw(Dumper);
 
 #  NiHTest -- package to run regression tests
-#  Copyright (C) 2002-2014 Dieter Baron and Thomas Klausner
+#  Copyright (C) 2002-2015 Dieter Baron and Thomas Klausner
 #
 #  This file is part of ckmame, a program to check rom sets for MAME.
 #  The authors can be contacted at <ckmame@nih.at>
@@ -439,8 +439,26 @@ sub compare_arrays() {
 	return $ok;
 }
 
+sub file_cmp($$) {
+	my ($a, $b) = @_;
+	my $result = 0;
+	open my $fha, "< $a";
+	open my $fhb, "< $b";
+	binmode $fha;
+	binmode $fhb;
+	BYTE: while (!eof $fha && !eof $fhb) {
+		if (getc $fha ne getc $fhb) {
+			$result = 1;
+			last BYTE;
+		}
+	}
+	$result = 1 if eof $fha != eof $fhb;
+	close $fha;
+	close $fhb;
+	return $result;
+}
 
-sub compare_file() {
+sub compare_file($$$) {
 	my ($self, $got, $expected) = @_;
 	
 	my $real_expected = $self->find_file($expected);
@@ -457,7 +475,7 @@ sub compare_file() {
 			$ret = system('diff', '-u', $real_expected, $got);
 		}
 		else {
-			$ret = system('cmp', '-s', $real_expected, $got);
+			$ret = file_cmp($real_expected, $got);
 		}
 		$ok = ($ret == 0);
 	}
@@ -465,26 +483,18 @@ sub compare_file() {
 	return $ok;
 }
 
-
 sub compare_files() {
 	my ($self) = @_;
 	
 	my $ok = 1;
 	
-	my $ls;
-	open $ls, "find . -type f -print |";
+	opendir(my $ls, '.');
 	unless ($ls) {
 		# TODO: handle error
 	}
-	my @files_got = ();
-	
-	while (my $line = <$ls>) {
-		chomp $line;
-		$line =~ s,^\./,,;
-		push @files_got, $line;
-	}
-	close($ls);
-	
+	my @files_got = grep { -f } readdir($ls);
+	closedir($ls);
+
 	@files_got = sort @files_got;
 	my @files_should = ();
 	
@@ -884,7 +894,9 @@ sub backslash_decode {
 
 sub run_program {
 	my ($self) = @_;
-	
+
+	goto &pipein_win32 if $^O eq 'MSWin32' && $self->{test}->{pipein};
+
 	my ($stdin, $stdout, $stderr);
 	$stderr = gensym;
 
@@ -911,13 +923,23 @@ sub run_program {
         }
 	
 	while (my $line = <$stdout>) {
-		chomp $line;
+		if ($^O eq 'MSWin32') {
+			$line =~ s/[\r\n]+$//;
+		}
+		else {
+			chomp $line;
+		}
 		push @{$self->{stdout}}, $line;
 	}
 	my $prg = $self->{test}->{program};
 	$prg =~ s,.*/,,;
 	while (my $line = <$stderr>) {
-		chomp $line;
+		if ($^O eq 'MSWin32') {
+			$line =~ s/[\r\n]+$//;
+		}
+		else {
+			chomp $line;
+		}
 
 		$line =~ s/^[^: ]*$prg: //;
 		if (defined($self->{test}->{'stderr-replace'})) {
@@ -931,6 +953,39 @@ sub run_program {
 	$self->{exit_status} = $? >> 8;
 }
 
+sub pipein_win32() {
+	my ($self) = @_;
+
+	my $cmd = "$self->{test}->{pipein}| ..\\$self->{test}->{program} " . join(' ', map ({ backslash_decode($_); } @{$self->{test}->{args}}));
+	my ($success, $error_message, $full_buf, $stdout_buf, $stderr_buf) = IPC::Cmd::run(command => $cmd);
+	if (!$success) {
+		### TODO: catch errors?
+	}
+
+	my @stdout = map { s/[\r\n]+$// } @$stdout_buf;
+	$self->{stdout} = \@stdout;
+        $self->{stderr} = [];
+
+	my $prg = $self->{test}->{program};
+	$prg =~ s,.*/,,;
+	foreach my $line (@$stderr_buf) {
+		$line =~ s/[\r\n]+$//;
+
+		$line =~ s/^[^: ]*$prg: //;
+		if (defined($self->{test}->{'stderr-replace'})) {
+			$line = $self->stderr_rewrite($self->{test}->{'stderr-replace'}, $line);
+		}
+		push @{$self->{stderr}}, $line;
+	}
+
+	$self->{exit_status} = 1;
+	if ($success) {
+		$self->{exit_status} = 0;
+	}
+	elsif ($error_message =~ /exited with value ([0-9]+)$/) {
+		$self->{exit_status} = $1 + 0;
+	}
+}
 
 sub sandbox_create {
 	my ($self, $tag) = @_;
@@ -974,14 +1029,8 @@ sub sandbox_remove {
 	my ($self) = @_;
 
 	my $ok = 1;
-	unless (system('chmod', '-R', 'u+rwx', $self->{sandbox_dir}) == 0) {
-		$self->warn("can't ensure that sandbox is writable: $!");
-	}
-	unless (system('rm', '-rf', $self->{sandbox_dir}) == 0) {
-		$self->warn("can't remove sandbox: $!");
-		$ok = 0;
-	}
-	
+	remove_tree($self->{sandbox_dir});
+
 	return $ok;
 }
 

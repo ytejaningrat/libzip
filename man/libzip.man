@@ -1,14 +1,36 @@
-.TH "LIBZIP" "3" "August 2, 2014" "NiH" "Library Functions Manual"
+.TH "LIBZIP" "3" "January 19, 2016" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBlibzip\fP
+\fBlibzip\fR
 \- library for manipulating zip archives
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
+\fB#include <zip.h>\fR
 .SH "DESCRIPTION"
-\fBlibzip\fP
+\fBlibzip\fR
 is a library for reading, creating, and modifying zip archives.
+.PP
+The main design criteria for
+\fBlibzip\fR
+were:
+.PD 0
+.TP 4n
+\fB\(bu\fR
+Do not create corrupt files, even in case of errors.
+.TP 4n
+\fB\(bu\fR
+Do not delete data.
+.TP 4n
+\fB\(bu\fR
+Be efficient.
+.PD
+.PP
+For this reason, when modifying zip archives,
+\fBlibzip\fR
+writes to a temporary file and replaces the original
+zip archive atomically.
 .PP
 Below there are two sections listing functions: one for how to read
 from zip archives and one for how to create/modify them.
@@ -81,6 +103,6 @@ zip_error_get(3)
 zip_error_get_sys_type(3)
 zip_errors(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

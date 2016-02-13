@@ -100,6 +100,7 @@ SET(LIBZIP_SOURCES
   zip_get_name.c
   zip_get_num_entries.c
   zip_get_num_files.c
+  zip_hash.c
   zip_io_util.c
   zip_memdup.c
   zip_name_locate.c
@@ -190,3 +191,11 @@ INSTALL(TARGETS zip
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
 #CREATE_LIBTOOL_FILE(zip lib)
+
+#ADD_LIBRARY(zipstatic STATIC ${LIBZIP_SOURCES} ${LIBZIP_EXTRA_FILES} ${LIBZIP_OPSYS_FILES})
+#SET_TARGET_PROPERTIES(zipstatic PROPERTIES VERSION 3.0 SOVERSION 3 )
+#TARGET_LINK_LIBRARIES(zipstatic ${ZLIB_LIBRARY})
+#INSTALL(TARGETS zipstatic
+#  RUNTIME DESTINATION bin
+#  ARCHIVE DESTINATION lib
+#  LIBRARY DESTINATION lib)

@@ -1,22 +1,28 @@
 .TH "ZIP_SET_ARCHIVE_FLAG" "3" "April 29, 2015" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_set_archive_flag\fP
+\fBzip_set_archive_flag\fR
 \- set zip archive flag
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-int
-zip_set_archive_flag zip_t *archive zip_flags_t flag int value
+\fB#include <zip.h>\fR
+.sp
+\fIint\fR
+.PD 0
+.HP 4n
+\fBzip_set_archive_flag\fR(\fIzip_t\ *archive\fR, \fIzip_flags_t\ flag\fR, \fIint\ value\fR);
+.PD
 .SH "DESCRIPTION"
 The
-zip_set_archive_flag
+\fBzip_set_archive_flag\fR()
 function sets the flag
-\fIflag\fP
+\fIflag\fR
 for the archive
-\fIarchive\fP
+\fIarchive\fR
 to the value
-\fIvalue\fP.
+\fIvalue\fR.
 .PP
 Currently there are no supported flags.
 .SH "RETURN VALUES"
@@ -26,6 +32,6 @@ occurred.
 libzip(3),
 zip_get_archive_flag(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

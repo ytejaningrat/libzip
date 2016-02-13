@@ -1,18 +1,24 @@
 .TH "ZIP_SOURCE_ROLLBACK_WRITE" "3" "November 18, 2014" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_source_rollback_write\fP
+\fBzip_source_rollback_write\fR
 \- undo changes to zip source
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-int
-zip_source_rollback_write zip_source_t *source
+\fB#include <zip.h>\fR
+.sp
+\fIint\fR
+.PD 0
+.HP 4n
+\fBzip_source_rollback_write\fR(\fIzip_source_t\ *source\fR);
+.PD
 .SH "DESCRIPTION"
 The function
-zip_source_rollback_write
+\fBzip_source_rollback_write\fR()
 reverts changes written to
-source,
+\fIsource\fR,
 restoring the data before
 zip_source_begin_write(3)
 was called.
@@ -20,7 +26,7 @@ Usually this removes temporary files or frees buffers.
 .SH "RETURN VALUES"
 Upon successful completion 0 is returned.
 Otherwise, \-1 is returned and the error information in
-\fIsource\fP
+\fIsource\fR
 is set to indicate the error.
 .SH "SEE ALSO"
 libzip(3),
@@ -31,6 +37,6 @@ zip_source_seek_write(3),
 zip_source_tell_write(3),
 zip_source_write(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

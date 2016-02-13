@@ -1,32 +1,38 @@
 .TH "ZIP_ERROR_TO_DATA" "3" "November 2, 2014" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_error_to_data\fP
+\fBzip_error_to_data\fR
 \- convert zip_error to return value suitable for ZIP_SOURCE_ERROR
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-zip_int64_t
-zip_error_to_data const zip_error_t *ze void *data zip_uint64_t len
+\fB#include <zip.h>\fR
+.sp
+\fIzip_int64_t\fR
+.PD 0
+.HP 4n
+\fBzip_error_to_data\fR(\fIconst\ zip_error_t\ *ze\fR, \fIvoid\ *data\fR, \fIzip_uint64_t\ len\fR);
+.PD
 .SH "DESCRIPTION"
-zip_error_to_data
+\fBzip_error_to_data\fR()
 function converts the zip_error
-\fIze\fP
+\fIze\fR
 into data suitable as return value for
-\fRZIP_SOURCE_ERROR\fP.
+\fRZIP_SOURCE_ERROR\fR.
 The data is written into the buffer
-\fIdata\fP
+\fIdata\fR
 of size
-\fIlen\fP.
+\fIlen\fR.
 If the buffer is not large enough to hold 2 ints, an error is
 returned.
 .SH "RETURN VALUES"
-zip_error_to_data
+\fBzip_error_to_data\fR()
 returns 2*(sizeof int) on success, and \-1 on error.
 .SH "SEE ALSO"
 libzip(3),
 zip_source_function(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

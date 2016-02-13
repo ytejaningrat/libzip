@@ -1,43 +1,49 @@
-.TH "ZIP_SOURCE_SEEK_COMPUTE_OFFSET" "1" "November 13, 2014" "NiH" "LOCAL"
+.TH "ZIP_SOURCE_SEEK_COMPUTE_OFFSET" "3" "November 13, 2014" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_source_seek_compute_offset\fP
+\fBzip_source_seek_compute_offset\fR
 \- validate arguments and compute offset
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-zip_int64_t
-zip_source_seek_compute_offset zip_uint64_t offset zip_uint64_t length void *data zip_uint64_t data_length zip_error_t *error
+\fB#include <zip.h>\fR
+.sp
+\fIzip_int64_t\fR
+.PD 0
+.HP 4n
+\fBzip_source_seek_compute_offset\fR(\fIzip_uint64_t\ offset\fR, \fIzip_uint64_t\ length\fR, \fIvoid\ *data\fR, \fIzip_uint64_t\ data_length\fR, \fIzip_error_t\ *error\fR);
+.PD
 .SH "DESCRIPTION"
 Use this function to compute the offset for a
-\fRZIP_SOURCE_SEEK\fP
+\fRZIP_SOURCE_SEEK\fR
 or
-\fRZIP_SOURCE_SEEK_WRITE\fP
+\fRZIP_SOURCE_SEEK_WRITE\fR
 command.
-\fIdata\fP
+\fIdata\fR
 and
-\fIdata_length\fP
+\fIdata_length\fR
 are the arguments to the source callback,
-\fIoffset\fP
+\fIoffset\fR
 is the current offset and
-\fIlength\fP
+\fIlength\fR
 is the length of the source data or, for
-\fRZIP_SOURCE_SEEK_WRITE\fP,
+\fRZIP_SOURCE_SEEK_WRITE\fR,
 the amount of data written.
 .SH "RETURN VALUES"
 On success, it returns the new offset, on error it returns \-1 and
 sets
-\fIerror\fP.
+\fIerror\fR.
 .SH "ERRORS"
-zip_source_seek_compute_offset
+\fBzip_source_seek_compute_offset\fR()
 fails if:
-.TP 17n
-[\fRZIP_ER_INVAL\fP]
+.TP 19n
+[\fRZIP_ER_INVAL\fR]
 One of the arguments is invalid or the seek would place the offset
 outside the data.
 .SH "SEE ALSO"
 zip_source_function(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

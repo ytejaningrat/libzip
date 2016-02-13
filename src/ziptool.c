@@ -1,6 +1,6 @@
 /*
-  modify.c -- test tool for modifying zip archive in multiple ways
-  Copyright (C) 2012-2015 Dieter Baron and Thomas Klausner
+  ziptool.c -- tool for modifying zip archive in multiple ways
+  Copyright (C) 2012-2016 Dieter Baron and Thomas Klausner
 
   This file is part of libzip, a library to manipulate ZIP archives.
   The authors can be contacted at <libzip@nih.at>
@@ -17,7 +17,7 @@
   3. The names of the authors may not be used to endorse or promote
      products derived from this software without specific prior
      written permission.
- 
+
   THIS SOFTWARE IS PROVIDED BY THE AUTHORS ``AS IS'' AND ANY EXPRESS
   OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -40,13 +40,18 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <inttypes.h>
+#ifdef _WIN32
+/* WIN32 needs <fcntl.h> for _O_BINARY */
+#include <fcntl.h>
+#endif
 
 #ifndef HAVE_GETOPT
 #include "getopt.h"
 #endif
+extern int optopt;
 
 #include "zip.h"
+#include "compat.h"
 
 zip_source_t *source_hole_create(const char *, int flags, zip_error_t *);
 
@@ -71,7 +76,7 @@ static zip_t *read_to_memory(const char *archive, int flags, int *err, zip_sourc
 static zip_source_t *source_nul(zip_t *za, zip_uint64_t length);
 
 zip_t *za, *z_in[16];
-int z_in_count;
+unsigned int z_in_count;
 zip_flags_t stat_flags;
 
 static int
@@ -129,13 +134,14 @@ add_file(int argc, char *argv[]) {
 
 static int
 add_from_zip(int argc, char *argv[]) {
-    zip_uint64_t idx;
+    zip_uint64_t idx, start;
+    zip_int64_t len;
     int err;
     zip_source_t *zs;
     /* add from another zip file */
     idx = strtoull(argv[2], NULL, 10);
-    zip_uint64_t start = strtoull(argv[3], NULL, 10);
-    zip_int64_t len = strtoll(argv[4], NULL, 10);
+    start = strtoull(argv[3], NULL, 10);
+    len = strtoll(argv[4], NULL, 10);
     if ((z_in[z_in_count]=zip_open(argv[1], ZIP_CHECKCONS, &err)) == NULL) {
 	zip_error_t error;
 	zip_error_init_with_code(&error, err);
@@ -162,12 +168,12 @@ static int
 add_nul(int argc, char *argv[]) {
     zip_source_t *zs;
     zip_uint64_t length = strtoull(argv[1], NULL, 10);
-    
+
     if ((zs=source_nul(za, length)) == NULL) {
         fprintf(stderr, "can't create zip_source for length: %s\n", zip_strerror(za));
         return -1;
     }
-    
+
     if (zip_add(za, argv[0], zs) == -1) {
         zip_source_free(zs);
         fprintf(stderr, "can't add file '%s': %s\n", argv[0], zip_strerror(za));
@@ -186,6 +192,10 @@ cat(int argc, char *argv[]) {
     int err;
     idx = strtoull(argv[0], NULL, 10);
 
+#ifdef _WIN32
+    /* Need to set stdout to binary mode for Windows */
+    setmode(fileno(stdout), _O_BINARY);
+#endif
     if ((zf=zip_fopen_index(za, idx, 0)) == NULL) {
 	fprintf(stderr, "can't open file at index '%" PRIu64 "': %s\n", idx, zip_strerror(za));
 	return -1;
@@ -204,7 +214,7 @@ cat(int argc, char *argv[]) {
     }
     if ((err = zip_fclose(zf)) != 0) {
 	zip_error_t error;
-	
+
 	zip_error_init_with_code(&error, err);
 	fprintf(stderr, "can't close file at index '%" PRIu64 "': %s\n", idx, zip_error_strerror(&error));
 	return -1;
@@ -365,6 +375,17 @@ get_file_comment(int argc, char *argv[]) {
 }
 
 static int
+get_num_entries(int argc, char *argv[]) {
+    zip_int64_t count;
+    zip_flags_t flags;
+    /* get number of entries in archive */
+    flags = get_flags(argv[0]);
+    count = zip_get_num_entries(za, flags);
+    printf("%" PRId64 " entr%s in archive\n", count, count == 1 ? "y" : "ies");
+    return 0;
+}
+
+static int
 name_locate(int argc, char *argv[]) {
     zip_flags_t flags;
     zip_int64_t idx;
@@ -374,7 +395,7 @@ name_locate(int argc, char *argv[]) {
 	fprintf(stderr, "can't find entry with name '%s' using flags '%s'\n", argv[0], argv[1]);
     } else {
 	printf("name '%s' using flags '%s' found at index %" PRId64 "\n", argv[0], argv[1], idx);
-    }	
+    }
 
     return 0;
 }
@@ -469,6 +490,37 @@ set_file_mtime(int argc, char *argv[]) {
     mtime = (time_t)strtoull(argv[1], NULL, 10);
     if (zip_file_set_mtime(za, idx, mtime, 0) < 0) {
 	fprintf(stderr, "can't set file mtime at index '%" PRIu64 "' to `%ld': %s\n", idx, mtime, zip_strerror(za));
+	return -1;
+    }
+    return 0;
+}
+
+static int
+set_file_mtime_all(int argc, char *argv[]) {
+    /* set last modification time (mtime) for all files */
+    time_t mtime;
+    zip_int64_t num_entries;
+    zip_uint64_t idx;
+    mtime = (time_t)strtoull(argv[0], NULL, 10);
+    
+    if ((num_entries = zip_get_num_entries(za, 0)) < 0) {
+        fprintf(stderr, "can't get number of entries: %s\n", zip_strerror(za));
+        return -1;
+    }
+    for (idx = 0; idx < (zip_uint64_t)num_entries; idx++) {
+	if (zip_file_set_mtime(za, idx, mtime, 0) < 0) {
+	    fprintf(stderr, "can't set file mtime at index '%" PRIu64 "' to `%ld': %s\n", idx, mtime, zip_strerror(za));
+	    return -1;
+	}
+    }
+    return 0;
+}
+
+static int
+set_password(int argc, char *argv[]) {
+    /* set default password */
+    if (zip_set_default_password(za, argv[0]) < 0) {
+	fprintf(stderr, "can't set default password to `%s'", argv[0]);
 	return -1;
     }
     return 0;
@@ -581,11 +633,11 @@ hexdump(const zip_uint8_t *data, zip_uint16_t len)
 	return;
 
     printf("0x");
-	
+
     for (i=0; i<len; i++)
 	printf("%02x", data[i]);
 
-    return;    
+    return;
 }
 
 
@@ -595,16 +647,16 @@ read_hole(const char *archive, int flags, int *err)
     zip_error_t error;
     zip_source_t *src = NULL;
     zip_t *zs = NULL;
-    
+
     zip_error_init(&error);
-    
+
     if ((src = source_hole_create(archive, flags, &error)) == NULL
         || (zs = zip_open_from_source(src, flags, &error)) == NULL) {
         zip_source_free(src);
         *err = zip_error_code_zip(&error);
         errno = zip_error_code_system(&error);
     }
-    
+
     return zs;
 }
 
@@ -678,22 +730,22 @@ static zip_int64_t
 source_nul_cb(void *ud, void *data, zip_uint64_t length, zip_source_cmd_t command)
 {
     source_nul_t *ctx = (source_nul_t *)ud;
-    
+
     switch (command) {
         case ZIP_SOURCE_CLOSE:
             return 0;
 
         case ZIP_SOURCE_ERROR:
             return zip_error_to_data(&ctx->error, data, length);
-            
+
         case ZIP_SOURCE_FREE:
             free(ctx);
             return 0;
-            
+
         case ZIP_SOURCE_OPEN:
             ctx->offset = 0;
             return 0;
-            
+
         case ZIP_SOURCE_READ:
 	    if (length > ZIP_INT64_MAX) {
 		zip_error_set(&ctx->error, ZIP_ER_INVAL, 0);
@@ -703,24 +755,24 @@ source_nul_cb(void *ud, void *data, zip_uint64_t length, zip_source_cmd_t comman
             if (length > ctx->length - ctx->offset) {
                 length =ctx->length - ctx->offset;
             }
-            
+
             memset(data, 0, length);
             ctx->offset += length;
             return (zip_int64_t)length;
-            
+
         case ZIP_SOURCE_STAT: {
             zip_stat_t *st = ZIP_SOURCE_GET_ARGS(zip_stat_t, data, length, &ctx->error);
-            
+
             if (st == NULL) {
                 return -1;
             }
-            
+
             st->valid |= ZIP_STAT_SIZE;
             st->size = ctx->length;
-            
+
             return 0;
         }
-            
+
         case ZIP_SOURCE_SUPPORTS:
             return zip_source_make_command_bitmap(ZIP_SOURCE_CLOSE, ZIP_SOURCE_ERROR, ZIP_SOURCE_FREE, ZIP_SOURCE_OPEN, ZIP_SOURCE_READ, ZIP_SOURCE_STAT, -1);
 
@@ -735,21 +787,21 @@ source_nul(zip_t *zs, zip_uint64_t length)
 {
     source_nul_t *ctx;
     zip_source_t *src;
-    
+
     if ((ctx = (source_nul_t *)malloc(sizeof(*ctx))) == NULL) {
         zip_error_set(zip_get_error(zs), ZIP_ER_MEMORY, 0);
         return NULL;
     }
-    
+
     zip_error_init(&ctx->error);
     ctx->length = length;
     ctx->offset = 0;
-    
+
     if ((src = zip_source_function(zs, source_nul_cb, ctx)) == NULL) {
         free(ctx);
         return NULL;
     }
-    
+
     return src;
 }
 
@@ -767,8 +819,8 @@ write_memory_src_to_file(const char *archive, zip_source_t *src)
     }
     if (zip_source_open(src) < 0) {
 	if (zip_error_code_zip(zip_source_error(src)) == ZIP_ER_DELETED) {
-	    if (remove(archive) < 0 && errno != ENOENT) {
-		fprintf(stderr, "remove failed: %s\n", strerror(errno));
+	    if (unlink(archive) < 0 && errno != ENOENT) {
+		fprintf(stderr, "unlink failed: %s\n", strerror(errno));
 		return -1;
 	    }
 	    return 0;
@@ -823,14 +875,17 @@ dispatch_table_t dispatch_table[] = {
     { "get_extra", 3, "index extra_index flags", "show extra field", get_extra },
     { "get_extra_by_id", 4, "index extra_id extra_index flags", "show extra field of type extra_id", get_extra_by_id },
     { "get_file_comment", 1, "index", "get file comment", get_file_comment },
+    { "get_num_entries", 1, "flags", "get number of entries in archive", get_num_entries },
     { "name_locate", 2, "name flags", "find entry in archive", name_locate },
     { "rename", 2, "index name", "rename entry", zrename },
     { "replace_file_contents", 2, "index data", "replace entry with data", replace_file_contents },
     { "set_archive_comment", 1, "comment", "set archive comment", set_archive_comment },
     { "set_extra", 5, "index extra_id extra_index flags value", "set extra field", set_extra },
     { "set_file_comment", 2, "index comment", "set file comment", set_file_comment },
-    { "set_file_compression", 3, "index method flags", "set file compression method", set_file_compression },
+    { "set_file_compression", 3, "index method compression_flags", "set file compression method", set_file_compression },
     { "set_file_mtime", 2, "index timestamp", "set file modification time", set_file_mtime },
+    { "set_file_mtime_all", 1, "timestamp", "set file modification time for all files", set_file_mtime_all },
+    { "set_password", 1, "password", "set default password for encryption", set_password },
     { "stat", 1, "index", "print information about entry", zstat },
     { "unchange_all", 0, "", "revert all changes", unchange_all },
     { "zin_close", 1, "index", "close input zip_source (for internal tests)", zin_close }
@@ -861,32 +916,47 @@ dispatch(int argc, char *argv[])
 
 
 static void
-usage(const char *progname)
+usage(const char *progname, const char *reason)
 {
     unsigned int i;
-    fprintf(stderr, "usage: %s [-cemnt] archive command1 [args] [command2 [args] ...]\n\n"
-	    "Supported options are:\n"
+    FILE *out;
+    if (reason == NULL)
+	out = stdout;
+    else
+	out = stderr;
+    fprintf(out, "usage: %s [-cegHhmnrst] archive command1 [args] [command2 [args] ...]\n", progname);
+    if (reason != NULL) {
+	fprintf(out, "%s\n", reason);
+	exit(1);
+    }
+
+    fprintf(out, "\nSupported options are:\n"
 	    "\t-c\tcheck consistency\n"
 	    "\t-e\terror if archive already exists (only useful with -n)\n"
 	    "\t-g\tguess file name encoding (for stat)\n"
             "\t-H\twrite files with holes compactly\n"
+            "\t-h\tdisplay this usage\n"
 	    "\t-m\tread archive into memory, and modify there; write out at end\n"
-	    "\t-n\tcreate archive if it doesn't exist (default)\n"
+	    "\t-n\tcreate archive if it doesn't exist\n"
 	    "\t-r\tprint raw file name encoding without translation (for stat)\n"
 	    "\t-s\tfollow file name convention strictly (for stat)\n"
-	    "\t-t\tdisregard current archive contents, if any\n", progname);
-    fprintf(stderr, "\nSupported commands and arguments are:\n");
+	    "\t-t\tdisregard current archive contents, if any\n");
+    fprintf(out, "\nSupported commands and arguments are:\n");
     for (i=0; i<sizeof(dispatch_table)/sizeof(dispatch_table_t); i++) {
-	fprintf(stderr, "\t%s %s -- %s\n", dispatch_table[i].cmdline_name, dispatch_table[i].arg_names, dispatch_table[i].description);
+	fprintf(out, "\t%s %s\n\t    %s\n\n", dispatch_table[i].cmdline_name, dispatch_table[i].arg_names, dispatch_table[i].description);
     }
-    fprintf(stderr, "\nSupported flags are:\n"
+    fprintf(out, "\nSupported flags are:\n"
 	    "\tC\tZIP_FL_NOCASE\n"
 	    "\tc\tZIP_FL_CENTRAL\n"
 	    "\td\tZIP_FL_NODIR\n"
 	    "\tl\tZIP_FL_LOCAL\n"
 	    "\tu\tZIP_FL_UNCHANGED\n");
-    fprintf(stderr, "\nThe index is zero-based.\n");
-    exit(1);
+    fprintf(out, "\nSupported compression methods are:\n"
+	    "\tdefault\n"
+	    "\tdeflate\n"
+	    "\tstore\n");
+    fprintf(out, "\nThe index is zero-based.\n");
+    exit(0);
 }
 
 int
@@ -894,7 +964,8 @@ main(int argc, char *argv[])
 {
     const char *archive;
     zip_source_t *memory_src;
-    int c, arg, err, flags, i;
+    unsigned int i;
+    int c, arg, err, flags;
     const char *prg;
     source_type_t source_type = SOURCE_TYPE_NONE;
 
@@ -902,9 +973,9 @@ main(int argc, char *argv[])
     prg = argv[0];
 
     if (argc < 2)
-	usage(prg);
+	usage(prg, "too few arguments");
 
-    while ((c=getopt(argc, argv, "cegHmnrst")) != -1) {
+    while ((c=getopt(argc, argv, "cegHhmnrst")) != -1) {
 	switch (c) {
 	case 'c':
 	    flags |= ZIP_CHECKCONS;
@@ -918,6 +989,9 @@ main(int argc, char *argv[])
         case 'H':
             source_type = SOURCE_TYPE_HOLE;
             break;
+	case 'h':
+	    usage(prg, NULL);
+	    break;
 	case 'm':
             source_type = SOURCE_TYPE_IN_MEMORY;
             break;
@@ -935,10 +1009,14 @@ main(int argc, char *argv[])
 	    break;
 
 	default:
-	    usage(prg);
+	{
+	    char reason[128];
+	    snprintf(reason, sizeof(reason), "invalid option -%c", optopt);
+	    usage(prg, reason);
+	}
 	}
     }
-    
+
     arg = optind;
 
     archive = argv[arg++];
@@ -950,11 +1028,11 @@ main(int argc, char *argv[])
         case SOURCE_TYPE_NONE:
             za = zip_open(archive, flags, &err);
             break;
-            
+
         case SOURCE_TYPE_IN_MEMORY:
             za = read_to_memory(archive, flags, &err, &memory_src);
             break;
-            
+
         case SOURCE_TYPE_HOLE: {
             za = read_hole(archive, flags, &err);
             break;

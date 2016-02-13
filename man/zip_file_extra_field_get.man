@@ -1,118 +1,130 @@
 .TH "ZIP_FILE_EXTRA_FIELD_GET" "3" "October 8, 2014" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_file_extra_field_get\fP,
-\fBzip_file_extra_field_get_by_id\fP
+\fBzip_file_extra_field_get\fR,
+\fBzip_file_extra_field_get_by_id\fR
 \- get extra field for file in zip
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-const zip_uint8_t *
-zip_file_extra_field_get zip_t *archive zip_uint64_t index zip_uint16_t extra_field_index zip_uint16_t *idp zip_uint16_t *lenp zip_flags_t flags
-const zip_uint8_t *
-zip_file_extra_field_get_by_id zip_t *archive zip_uint64_t index zip_uint16_t extra_field_id zip_uint16_t extra_field_index zip_uint16_t *lenp zip_flags_t flags
+\fB#include <zip.h>\fR
+.sp
+\fIconst zip_uint8_t *\fR
+.PD 0
+.HP 4n
+\fBzip_file_extra_field_get\fR(\fIzip_t\ *archive\fR, \fIzip_uint64_t\ index\fR, \fIzip_uint16_t\ extra_field_index\fR, \fIzip_uint16_t\ *idp\fR, \fIzip_uint16_t\ *lenp\fR, \fIzip_flags_t\ flags\fR);
+.PD
+.PP
+\fIconst zip_uint8_t *\fR
+.PD 0
+.HP 4n
+\fBzip_file_extra_field_get_by_id\fR(\fIzip_t\ *archive\fR, \fIzip_uint64_t\ index\fR, \fIzip_uint16_t\ extra_field_id\fR, \fIzip_uint16_t\ extra_field_index\fR, \fIzip_uint16_t\ *lenp\fR, \fIzip_flags_t\ flags\fR);
+.PD
 .SH "DESCRIPTION"
 The
-zip_file_extra_field_get
+\fBzip_file_extra_field_get\fR()
 function returns the extra field with index
-\fIextra_field_index\fP
+\fIextra_field_index\fR
 for the file at position
-\fIindex\fP
+\fIindex\fR
 in the zip archive.
 This pointer should not be modified or
 free(3)'d,
 and becomes invalid when
-\fIarchive\fP
+\fIarchive\fR
 is closed.
 If
-\fIidp\fP
+\fIidp\fR
 is not
-\fRNULL\fP,
+\fRNULL\fR,
 the integer to which it points will be set to the ID (two-byte
 signature) of the selected extra field.
 If
-\fIlenp\fP
+\fIlenp\fR
 is not
-\fRNULL\fP,
+\fRNULL\fR,
 the integer to which it points will be set to the length of the
 extra field.
 Generally speaking,
-\fIlenp\fP
+\fIlenp\fR
 and
-\fIidp\fP
+\fIidp\fR
 should be passed since only the extra field data is returned (i.e.,
 neither the ID nor the length, if the
-\fIidp\fP
+\fIidp\fR
 and
-\fIlenp\fP
+\fIlenp\fR
 arguments are not provided).
 .PP
 The following
-\fIflags\fP
+\fIflags\fR
 are supported:
-.TP ZIP_FL_UNCHANGEDXX
-\fRZIP_FL_CENTRAL\fP
+.RS 6n
+.TP 20n
+\fRZIP_FL_CENTRAL\fR
 Return extra fields from the archive's central directory.
-.TP ZIP_FL_UNCHANGEDXX
-\fRZIP_FL_LOCAL\fP
+.TP 20n
+\fRZIP_FL_LOCAL\fR
 Return extra fields from the local file headers.
-.TP ZIP_FL_UNCHANGEDXX
-\fRZIP_FL_UNCHANGED\fP
+.TP 20n
+\fRZIP_FL_UNCHANGED\fR
 Return the original unchanged extra fields, ignoring any changes made.
+.RE
 .PP
 The
-zip_file_extra_field_get_by_id
+\fBzip_file_extra_field_get_by_id\fR()
 function returns the extra field with ID (two-byte signature)
-\fIextra_field_id\fP
+\fIextra_field_id\fR
 and index
-\fIextra_field_index\fP
+\fIextra_field_index\fR
 (in other words, the
-\fIextra_field_index\fP'th
+\fIextra_field_index\fR'th
 extra field with ID
-\fIextra_field_id\fP)
+\fIextra_field_id\fR)
 The other arguments are the same as for
-zip_file_extra_field_get.
+\fBzip_file_extra_field_get\fR().
 .SH "RETURN VALUES"
 Upon successful completion, a pointer to an extra field is returned,
 or
-\fRNULL\fP
+\fRNULL\fR
 if there is no extra field with that
-\fIextra_field_index\fP
+\fIextra_field_index\fR
 for the file with index
-\fIindex\fP.
+\fIindex\fR.
 In case of an error,
-\fRNULL\fP
+\fRNULL\fR
 is returned and the error code in
-\fIarchive\fP
+\fIarchive\fR
 is set to indicate the error.
 .SH "ERRORS"
-zip_file_extra_field_get
+\fBzip_file_extra_field_get\fR()
 and
-zip_file_extra_field_get_by_id
+\fBzip_file_extra_field_get_by_id\fR()
 fail if:
-.TP 17n
-[\fRZIP_ER_NOENT\fP]
-\fIindex\fP
+.TP 19n
+[\fRZIP_ER_NOENT\fR]
+\fIindex\fR
 is not a valid file index in
-\fIarchive\fP,
+\fIarchive\fR,
 or
-\fIextra_field_index\fP
+\fIextra_field_index\fR
 is not a valid extra file index (for ID
-\fIextra_field_id\fP).
+\fIextra_field_id\fR).
 .SH "SEE ALSO"
 libzip(3),
 zip_file_extra_field_delete(3),
 zip_file_extra_field_set(3),
 zip_file_extra_fields_count(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>
 .SH "CAVEATS"
 Please note that the extra field IDs 0x0001 (ZIP64 extension),
 0x6375 (Infozip UTF-8 comment), and
 0x7075 (Infozip UTF-8 file name) can not be read using
-zip_file_extra_field_get
+\fBzip_file_extra_field_get\fR()
 since they are used by
 libzip(3)
 internally.

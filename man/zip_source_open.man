@@ -1,23 +1,29 @@
 .TH "ZIP_SOURCE_OPEN" "3" "November 18, 2014" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_source_open\fP
+\fBzip_source_open\fR
 \- open zip_source for reading
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-int
-zip_source_open zip_source_t *source
+\fB#include <zip.h>\fR
+.sp
+\fIint\fR
+.PD 0
+.HP 4n
+\fBzip_source_open\fR(\fIzip_source_t\ *source\fR);
+.PD
 .SH "DESCRIPTION"
 The function
-zip_source_open
+\fBzip_source_open\fR()
 opens
-source
+\fIsource\fR
 for reading.
 .SH "RETURN VALUES"
 Upon successful completion 0 is returned.
 Otherwise, \-1 is returned and the error information in
-\fIsource\fP
+\fIsource\fR
 is set to indicate the error.
 .SH "SEE ALSO"
 libzip(3),
@@ -28,6 +34,6 @@ zip_source_read(3),
 zip_source_seek(3),
 zip_source_tell(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

@@ -1,23 +1,29 @@
 .TH "ZIP_ERROR_CODE_ZIP" "3" "October 30, 2014" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_error_code_zip\fP
+\fBzip_error_code_zip\fR
 \- get libzip error part of zip_error
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-int
-zip_error_code_zip const zip_error_t *ze
+\fB#include <zip.h>\fR
+.sp
+\fIint\fR
+.PD 0
+.HP 4n
+\fBzip_error_code_zip\fR(\fIconst\ zip_error_t\ *ze\fR);
+.PD
 .SH "DESCRIPTION"
 The
-zip_error_code_zip
+\fBzip_error_code_zip\fR()
 function returns the libzip specific part of the error from the
 zip_error error
-\fIze\fP.
+\fIze\fR.
 .SH "SEE ALSO"
 libzip(3),
 zip_error_code_system(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

@@ -6,17 +6,14 @@ noinst_PROGRAMS= \
 	add_from_filep \
 	fopen_unchanged \
 	fread \
-	hole \
-	modify \
 	tryopen
 
-modify_SOURCES= \
-	modify.c \
-	source_hole.c
+pkglib_LTLIBRARIES=	malloc.la
+malloc_la_SOURCES=	malloc.c
+malloc_la_LDFLAGS=	-module -avoid-version
 
-hole_SOURCES= \
-	hole.c \
-	source_hole.c
+install-pkglibLTLIBRARIES:
+	@echo not installing shared objects needed only for testing
 
 EXTRA_DIST= \
 	CMakeLists.txt \
@@ -28,10 +25,24 @@ EXTRA_DIST= \
 	bogus.zip \
 	broken.zip \
 	cm-default.zip \
+	encrypt-aes.zip \
 	encrypt.zip \
 	encrypt_plus_extra.zip \
 	encrypt_plus_extra_modified_c.zip \
 	encrypt_plus_extra_modified_l.zip \
+	extra_field_align_1-0.zip \
+	extra_field_align_1-ff.zip \
+	extra_field_align_2-0.zip \
+	extra_field_align_2-ff.zip \
+	extra_field_align_3-0.zip \
+	extra_field_align_3-ff.zip \
+	extra_field_align_4-ff.zip \
+	extra_field_align_1-ef_00.zip \
+	extra_field_align_1-ef_ff.zip \
+	extra_field_align_2-ef_00.zip \
+	extra_field_align_2-ef_ff.zip \
+	extra_field_align_3-ef_00.zip \
+	extra_field_align_3-ef_ff.zip \
 	filename_duplicate.zip \
 	filename_duplicate_empty.zip \
 	filename_empty.zip \
@@ -58,10 +69,6 @@ EXTRA_DIST= \
 	incons-ef-central-size-wrong.zip \
 	incons-ef-local-id-size.zip \
 	incons-ef-local-id.zip \
-	incons-ef-local-incomplete1.zip \
-	incons-ef-local-incomplete2.zip \
-	incons-ef-local-incomplete3.zip \
-	incons-ef-local-incomplete4.zip \
 	incons-ef-local-size.zip \
 	incons-eocd-magic-bad.zip \
 	incons-file-count-high.zip \
@@ -111,6 +118,7 @@ EXTRA_DIST= \
 	teststored.zip \
 	utf-8-standardization-input.zip \
 	utf-8-standardization-output.zip \
+	zip-in-archive-comment.zip \
 	zip64.zip
 
 TESTS_ENVIRONMENT=	ZIPCMP=${top_builddir}/src/zipcmp
@@ -136,6 +144,11 @@ TESTS= \
 	add_from_zip_stored.test \
 	add_stored.test \
 	add_stored_in_memory.test \
+	count_entries.test \
+	decrypt-aes-correct-password.test \
+	decrypt-aes-wrong-password.test \
+	decrypt-correct-password.test \
+	decrypt-wrong-password.test \
 	delete_add_same.test \
 	delete_invalid.test \
 	delete_last.test \
@@ -150,6 +163,7 @@ TESTS= \
 	extra_count_ignore_zip64.test \
 	extra_delete.test \
 	extra_delete_by_id.test \
+	extra_field_align.test \
 	extra_get.test \
 	extra_get_by_id.test \
 	extra_set.test \
@@ -208,12 +222,12 @@ TESTS= \
 	stat_index_utf8_unmarked_strict.test \
 	stat_index_zip64.test \
 	utf-8-standardization.test \
+	zip-in-archive-comment.test \
 	zip64_creation.test \
 	zip64_stored_creation.test
 
-XFAIL_TESTS= \
-	open_filename_duplicate_consistency.test \
-	open_filename_duplicate_empty_consistency.test
+#XFAIL_TESTS=
+
 
 AM_CPPFLAGS=-I${top_srcdir}/lib -I../lib -I${top_srcdir}/src
 LDADD=${top_builddir}/lib/libzip.la
@@ -221,10 +235,10 @@ LDADD=${top_builddir}/lib/libzip.la
 check-am: bigzero.zip manyfiles.zip runtest
 
 bigzero.zip: bigzero-zip.zip
-	${builddir}/modify ${srcdir}/bigzero-zip.zip cat 0 > ${builddir}/bigzero.zip
+	${top_builddir}/src/ziptool ${srcdir}/bigzero-zip.zip cat 0 > ${builddir}/bigzero.zip
 
 manyfiles.zip: manyfiles-zip.zip
-	${builddir}/modify ${srcdir}/manyfiles-zip.zip cat 0 > ${builddir}/manyfiles.zip
+	${top_builddir}/src/ziptool ${srcdir}/manyfiles-zip.zip cat 0 > ${builddir}/manyfiles.zip
 
 runtest: runtest.in
 	sed -e 's!@[s]rcdir@!${srcdir}!g' -e 's!@[a]bs_srcdir@!${abs_srcdir}!g' ${srcdir}/runtest.in > runtest

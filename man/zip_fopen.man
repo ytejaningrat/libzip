@@ -1,45 +1,57 @@
 .TH "ZIP_FOPEN" "3" "October 23, 2013" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_fopen\fP,
-\fBzip_fopen_index\fP
+\fBzip_fopen\fR,
+\fBzip_fopen_index\fR
 \- open file in zip archive for reading
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-zip_file_t *
-zip_fopen zip_t *archive const char *fname zip_flags_t flags
-zip_file_t *
-zip_fopen_index zip_t *archive zip_uint64_t index zip_flags_t flags
+\fB#include <zip.h>\fR
+.sp
+\fIzip_file_t *\fR
+.PD 0
+.HP 4n
+\fBzip_fopen\fR(\fIzip_t\ *archive\fR, \fIconst\ char\ *fname\fR, \fIzip_flags_t\ flags\fR);
+.PD
+.PP
+\fIzip_file_t *\fR
+.PD 0
+.HP 4n
+\fBzip_fopen_index\fR(\fIzip_t\ *archive\fR, \fIzip_uint64_t\ index\fR, \fIzip_flags_t\ flags\fR);
+.PD
 .SH "DESCRIPTION"
 The
-zip_fopen
+\fBzip_fopen\fR()
 function opens the file name
-\fIfname\fP
+\fIfname\fR
 in
-\fIarchive\fP.
+\fIarchive\fR.
 The
-\fIflags\fP
+\fIflags\fR
 argument specifies how the name lookup should be done, according to
 the values are described in
 zip_name_locate(3).
 Also, the following values may be
-\fIor\fP'ed
+\fIor\fR'ed
 to it.
-.TP ZIP_FL_COMPRESSED
-\fRZIP_FL_COMPRESSED\fP
+.RS 6n
+.TP 19n
+\fRZIP_FL_COMPRESSED\fR
 Read the compressed data.
 Otherwise the data is uncompressed by
-zip_fread.
-.TP ZIP_FL_COMPRESSED
-\fRZIP_FL_UNCHANGED\fP
+\fBzip_fread\fR().
+.TP 19n
+\fRZIP_FL_UNCHANGED\fR
 Read the original data from the zip archive, ignoring any changes made
 to the file.
+.RE
 .PP
 The
-zip_fopen_index
+\fBzip_fopen_index\fR()
 function opens the file at position
-\fIindex\fP.
+\fIindex\fR.
 .PP
 If encrypted data is encountered, the functions call
 zip_fopen_encrypted(3)
@@ -49,57 +61,57 @@ respectively, using the default password set with
 zip_set_default_password(3).
 .SH "RETURN VALUES"
 Upon successful completion, a
-struct zip_file
+\fIstruct zip_file\fR
 pointer is returned.
 Otherwise,
-\fRNULL\fP
+\fRNULL\fR
 is returned and the error code in
-\fIarchive\fP
+\fIarchive\fR
 is set to indicate the error.
 .SH "ERRORS"
-.TP 17n
-[\fRZIP_ER_CHANGED\fP]
+.TP 19n
+[\fRZIP_ER_CHANGED\fR]
 The file data has been changed.
-.TP 17n
-[\fRZIP_ER_COMPNOTSUPP\fP]
+.TP 19n
+[\fRZIP_ER_COMPNOTSUPP\fR]
 The compression method used is not supported.
-.TP 17n
-[\fRZIP_ER_ENCRNOTSUPP\fP]
+.TP 19n
+[\fRZIP_ER_ENCRNOTSUPP\fR]
 The encryption method used is not supported.
-.TP 17n
-[\fRZIP_ER_MEMORY\fP]
+.TP 19n
+[\fRZIP_ER_MEMORY\fR]
 Required memory could not be allocated.
-.TP 17n
-[\fRZIP_ER_NOPASSWD\fP]
+.TP 19n
+[\fRZIP_ER_NOPASSWD\fR]
 The file is encrypted, but no password has been provided.
-.TP 17n
-[\fRZIP_ER_READ\fP]
+.TP 19n
+[\fRZIP_ER_READ\fR]
 A file read error occurred.
-.TP 17n
-[\fRZIP_ER_SEEK\fP]
+.TP 19n
+[\fRZIP_ER_SEEK\fR]
 A file seek error occurred.
-.TP 17n
-[\fRZIP_ER_WRONGPASSWD\fP]
+.TP 19n
+[\fRZIP_ER_WRONGPASSWD\fR]
 The provided password does not match the password used for encryption.
 Note that some incorrect passwords are not detected by the check done by
-zip_fopen.
-.TP 17n
-[\fRZIP_ER_ZLIB\fP]
+\fBzip_fopen\fR().
+.TP 19n
+[\fRZIP_ER_ZLIB\fR]
 Initializing the zlib stream failed.
 .PP
 The function
-zip_fopen
+\fBzip_fopen\fR()
 may also fail and set
-zip_err
+\fIzip_err\fR
 for any of the errors specified for the routine
 zip_name_locate(3).
 .PP
 The function
-zip_fopen_index
+\fBzip_fopen_index\fR()
 may also fail with
-\fRZIP_ER_INVAL\fP
+\fRZIP_ER_INVAL\fR
 if
-\fIindex\fP
+\fIindex\fR
 is invalid.
 .SH "SEE ALSO"
 libzip(3),
@@ -109,6 +121,6 @@ zip_get_num_entries(3),
 zip_name_locate(3),
 zip_set_default_password(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

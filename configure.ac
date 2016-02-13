@@ -1,5 +1,5 @@
 AC_PREREQ([2.60])
-AC_INIT([libzip],[1.0.1],[libzip@nih.at])
+AC_INIT([libzip],[1.1.1],[libzip@nih.at])
 AC_CONFIG_SRCDIR([lib/zip_add.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -52,16 +52,19 @@ AC_EXEEXT
 
 LT_INIT
 
-AC_CHECK_FUNCS([_close _dup _fdopen _fileno _open _snprintf _strdup _stricmp fseeko ftello getopt open snprintf strcasecmp strdup])
+AC_CHECK_FUNCS([_close _dup _fdopen _fileno _open _setmode _snprintf _strdup _stricmp fileno fseeko ftello getopt getprogname open setmode snprintf strcasecmp strdup stricmp])
 AC_CHECK_FUNCS([mkstemp], [], [AC_LIBOBJ(mkstemp)])
 
-AC_MSG_CHECKING([MoveFileExA])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <windows.h>],
-			       [MoveFileExA("", "", 0);])],
-	       [AC_MSG_RESULT([yes])
-	        AC_DEFINE([HAVE_MOVEFILEEXA], [1],
-			[Define to 1 if you have the `MoveFileExA' function.])],
-	       [AC_MSG_RESULT([no])])
+AC_CACHE_CHECK([if libc defines __progname], ac_cv_libc_defines___progname,
+	       [ AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
+						 [[ extern char *__progname; printf("%s", __progname); ]])],
+						 [ ac_cv_libc_defines___progname="yes" ],
+						 [ ac_cv_libc_defines___progname="no" ])
+	       ])
+if test "x$ac_cv_libc_defines___progname" = "xyes" ; then
+    AC_DEFINE([HAVE___PROGNAME], [1], [Define if libc defines __progname])
+fi
+
 
 AC_CHECK_HEADERS([fts.h stdbool.h strings.h unistd.h])
 

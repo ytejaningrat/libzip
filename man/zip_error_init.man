@@ -1,29 +1,39 @@
 .TH "ZIP_ERROR_INIT" "3" "December 2, 2014" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_error_init\fP,
-\fBzip_error_init_with_code\fP
+\fBzip_error_init\fR,
+\fBzip_error_init_with_code\fR
 \- initialize zip_error structure
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip.h
-void
-zip_error_init zip_error_t *error
-void
-zip_error_init_with_code zip_error_t *error int ze
+\fB#include <zip.h>\fR
+.sp
+\fIvoid\fR
+.PD 0
+.HP 4n
+\fBzip_error_init\fR(\fIzip_error_t\ *error\fR);
+.PD
+.PP
+\fIvoid\fR
+.PD 0
+.HP 4n
+\fBzip_error_init_with_code\fR(\fIzip_error_t\ *error\fR, \fIint\ ze\fR);
+.PD
 .SH "DESCRIPTION"
 The
-zip_error_init
+\fBzip_error_init\fR()
 function initializes the zip_error pointed to by
-\fIerror\fP.
-\fI*error\fP
+\fIerror\fR.
+\fI*error\fR
 must be allocated before calling
-zip_error_init.
+\fBzip_error_init\fR().
 .PP
 The
-zip_error_init_with_code
+\fBzip_error_init_with_code\fR()
 function does the same, but additionally sets the zip error code to
-\fIze\fP
+\fIze\fR
 and sets the system error code to the current
 errno(3)
 value, if appropriate.
@@ -31,6 +41,6 @@ value, if appropriate.
 libzip(3),
 zip_error_fini(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

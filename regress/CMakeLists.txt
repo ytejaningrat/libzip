@@ -14,18 +14,12 @@ SET(STANDALONE_TEST_PROGRAMS
 )
 
 SET(HELPER_TEST_PROGRAMS
-#  modify
 #  tryopen
 )
 
 SET(GETOPT_USERS
   fread
   tryopen
-)
-
-SET(HOLE_USERS
-  hole
-  modify
 )
 
 SET(EXTRA_TESTS
@@ -43,6 +37,9 @@ SET(EXTRA_TESTS
 	add_from_zip_stored.test
 	add_stored.test
 	add_stored_in_memory.test
+	count_entries.test
+	decrypt-correct-password.test
+	decrypt-wrong-password.test
 	delete_add_same.test
 	delete_invalid.test
 	delete_last.test
@@ -57,6 +54,7 @@ SET(EXTRA_TESTS
 	extra_count_ignore_zip64.test
 	extra_delete.test
 	extra_delete_by_id.test
+	extra_field_align.test
 	extra_get.test
 	extra_get_by_id.test
 	extra_set.test
@@ -130,10 +128,6 @@ FOREACH(PROGRAM ${GETOPT_USERS})
   ADD_EXECUTABLE(${PROGRAM} ${PROGRAM}.c ${SRC_EXTRA_FILES})
   TARGET_LINK_LIBRARIES(${PROGRAM} zip)
 ENDFOREACH(PROGRAM ${GETOPT_USERS})
-FOREACH(PROGRAM ${HOLE_USERS})
-  ADD_EXECUTABLE(${PROGRAM} ${PROGRAM}.c ${SRC_EXTRA_FILES} source_hole.c)
-  TARGET_LINK_LIBRARIES(${PROGRAM} zip)
-ENDFOREACH(PROGRAM ${HOLE_USERS})
 
 ADD_TEST(fread ${CMAKE_CURRENT_SOURCE_DIR}/runtest ${CMAKE_CURRENT_SOURCE_DIR}/fread)
 

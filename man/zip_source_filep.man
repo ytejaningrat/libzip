@@ -1,54 +1,68 @@
-.TH "ZIP_SOURCE_FILEP" "3" "November 18, 2014" "NiH" "Library Functions Manual"
+.TH "ZIP_SOURCE_FILEP" "3" "November 10, 2015" "NiH" "Library Functions Manual"
+.nh
+.if n .ad l
 .SH "NAME"
-\fBzip_source_filep\fP
+\fBzip_source_filep\fR
 \- create data source from FILE *
 .SH "LIBRARY"
 libzip (-lzip)
 .SH "SYNOPSIS"
-zip_source_t *
-zip_source_filep zip_t *archive FILE *file zip_uint64_t start zip_int64_t len
-zip_source_t *
-zip_source_filep FILE *file zip_uint64_t start zip_int64_t len zip_error_t *error
+\fIzip_source_t *\fR
+.PD 0
+.HP 4n
+\fBzip_source_filep\fR(\fIzip_t\ *archive\fR, \fIFILE\ *file\fR, \fIzip_uint64_t\ start\fR, \fIzip_int64_t\ len\fR);
+.PD
+.PP
+\fIzip_source_t *\fR
+.PD 0
+.HP 4n
+\fBzip_source_filep\fR(\fIFILE\ *file\fR, \fIzip_uint64_t\ start\fR, \fIzip_int64_t\ len\fR, \fIzip_error_t\ *error\fR);
+.PD
 .SH "DESCRIPTION"
 The functions
-zip_source_filep
+\fBzip_source_filep\fR()
 and
-zip_source_filep_create
+\fBzip_source_filep_create\fR()
 create a zip source from a file stream.
 They read
-\fIlen\fP
+\fIlen\fR
 bytes from offset
-\fIstart\fP
+\fIstart\fR
 from the open file stream
-\fIfile\fP.
+\fIfile\fR.
 If
-\fIlen\fP
+\fIlen\fR
 is 0 or \-1, the whole file (starting from
-\fIstart\fP)
+\fIstart\fR)
 is used.
 .PP
-If the file stream supports seeking, the source can be used to open a read-only zip archive from.
+If the file stream supports seeking, the source can be used to open
+a read-only zip archive from.
+.PP
+The file stream is closed when the source is being freed, usually
+by
+zip_close(3).
 .SH "RETURN VALUES"
 Upon successful completion, the created source is returned.
 Otherwise,
-\fRNULL\fP
+\fRNULL\fR
 is returned and the error code in
-\fIarchive\fP
+\fIarchive\fR
 or
-\fIerror\fP
+\fIerror\fR
 is set to indicate the error.
 .SH "ERRORS"
-zip_source_filep
+\fBzip_source_filep\fR()
 fails if:
-.TP 17n
-[\fRZIP_ER_INVAL\fP]
-\fIfile\fP,
-\fIstart\fP,
+.TP 19n
+[\fRZIP_ER_INVAL\fR]
+\fIfile\fR,
+\fIstart\fR,
 or
-\fIlen\fP
+\fIlen\fR
 are invalid.
-.TP 17n
-[\fRZIP_ER_MEMORY\fP]
+.TP 19n
+[\fRZIP_ER_MEMORY\fR]
 Required memory could not be allocated.
 .SH "SEE ALSO"
 libzip(3),
@@ -56,6 +70,6 @@ zip_add(3),
 zip_replace(3),
 zip_source(3)
 .SH "AUTHORS"
-Dieter Baron <dillo@nih.at>
+Dieter Baron <\fIdillo@nih.at\fR>
 and
-Thomas Klausner <tk@giga.or.at>
+Thomas Klausner <\fItk@giga.or.at\fR>

@@ -44,6 +44,9 @@ Features
 * delete all extra fields during zip_replace()
 * function to copy file from one archive to another
 * set O_CLOEXEC flag after fopen and mkstemp
+* configure: use windows backends on windows
+* add append-only mode writing file to disk incrementally to keep memory usage low
+* zip_file_set_mtime: support InfoZIP time stamps
 
 * support streaming output (creating new archive to e.g. stdout)
 * add functions to:
@@ -68,7 +71,6 @@ Bugs
 ====
 * support InfoZIP encryption header extension (copy data descriptor for encrypted files)
 ! ensure that nentries is small enough not to cause overflow (size_t for entry, uint64 for CD on disk)
-* Xcode 32bit build uses 64bit config.h
 * fix OpenSUSE i686 regression failures
 * fix open_filename_duplicate_consistency.test to fail
 * check for limits imposed by format (central dir size, file size, extra fields, ...)
@@ -100,6 +102,8 @@ Infrastructure
 
 Test Case Issues
 ================
+* unchange on added file
+* test seek in zip_source_crc
 * test cases for set_extra*, delete_extra*, *extra_field*
 * test cases for in memory archives
   add

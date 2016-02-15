@@ -51,3 +51,12 @@ Description: merge zip archives
  zipmerge merges a source zip archives into a target zip archive.
  By default, files in the source zip archives overwrite existing files of the
  same name in the target zip archive.
+
+Package: ziptool
+Section: utils
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: modify zip archives
+ ziptool is a utility for working with zip archives.  It can modify
+ details of zip archives according to the commands given, including
+ timestamps and other metadata about the included files.

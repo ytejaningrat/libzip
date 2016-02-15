@@ -1,7 +1,7 @@
 libzip (1.1.1-1.1) unstable; urgency=medium
 
   * Non-maintainer upload.
-  * New upstream version.
+  * New upstream version (Closes: #662083)
 
  -- Hans-Christoph Steiner <hans@eds.org>  Sat, 13 Feb 2016 19:43:02 +0100
 

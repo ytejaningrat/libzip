@@ -12,3 +12,6 @@ override_dh_link:
 	install -d debian/libzip-dev/usr/include/${DEB_HOST_MULTIARCH}
 	ln -s ../../lib/${DEB_HOST_MULTIARCH}/libzip/include/zipconf.h debian/libzip-dev/usr/include/${DEB_HOST_MULTIARCH}/zipconf.h
 	dh_link
+
+override_dh_installchangelogs:
+	dh_installchangelogs NEWS

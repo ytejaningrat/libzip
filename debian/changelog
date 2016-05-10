@@ -1,9 +1,15 @@
-libzip (1.1.1-1.1) unstable; urgency=medium
+libzip (1.1.2-1.1) unstable; urgency=medium
 
-  * Non-maintainer upload.
+  [ Hans-Christoph Steiner ]
+  * Imported Upstream version 1.1.1
   * New upstream version (Closes: #662083)
 
- -- Hans-Christoph Steiner <hans@eds.org>  Sat, 13 Feb 2016 19:43:02 +0100
+  [ Ondřej Surý ]
+  * Non-maintainer upload.
+  * Imported Upstream version 1.1.2
+  * Install NEWS as upstream changelog, README and TODO is no more
+
+ -- Ondřej Surý <ondrej@debian.org>  Tue, 10 May 2016 12:09:23 +0200
 
 libzip (1.0.1-1.1) unstable; urgency=low
 

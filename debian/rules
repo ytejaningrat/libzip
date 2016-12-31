@@ -14,4 +14,4 @@ override_dh_link:
 	dh_link
 
 override_dh_installchangelogs:
-	dh_installchangelogs NEWS
+	dh_installchangelogs NEWS.md

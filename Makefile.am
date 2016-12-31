@@ -9,12 +9,15 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libzip.pc
 
 EXTRA_DIST=	API-CHANGES \
-		LICENSE \
 		CMakeLists.txt \
+		LICENSE \
+		NEWS.md \
+		README.md \
+		TODO.md \
 		cmake-config.h.in \
 		cmake-zipconf.h.in \
-		libzip.pc.in \
 		libzip-uninstalled.pc.in \
+		libzip.pc.in \
 		m4
 
 dist-hook:

@@ -4,8 +4,10 @@ libzip (1.1.3-1) unstable; urgency=medium
   * Add myself to Uploaders
   * Bump standards version (no change)
   * Rewrap with wrap-and-sort -a for better readability
+  * Upstream changelog got renamed to NEWS.md
+  * Install README.md and TODO.md into the packages again
 
- -- Ondřej Surý <ondrej@debian.org>  Sat, 31 Dec 2016 14:42:40 +0100
+ -- Ondřej Surý <ondrej@debian.org>  Sat, 31 Dec 2016 15:03:01 +0100
 
 libzip (1.1.2-1.1) unstable; urgency=medium
 

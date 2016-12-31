@@ -3,7 +3,7 @@ Priority: optional
 Maintainer: Fathi Boudra <fabo@debian.org>
 Uploaders: Ondřej Surý <ondrej@debian.org>
 Build-Depends: debhelper (>= 9), dh-autoreconf, unzip, zlib1g-dev
-Standards-Version: 3.9.7
+Standards-Version: 3.9.8
 Section: libs
 Homepage: http://www.nih.at/libzip/
 Vcs-Git: https://anonscm.debian.org/git/collab-maint/libzip.git

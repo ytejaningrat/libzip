@@ -192,8 +192,8 @@ CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(srcdir)/libzip-uninstalled.pc.in $(srcdir)/libzip.pc.in \
-	AUTHORS INSTALL NEWS THANKS compile config.guess config.sub \
-	depcomp install-sh ltmain.sh missing
+	AUTHORS INSTALL THANKS compile config.guess config.sub depcomp \
+	install-sh ltmain.sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -362,12 +362,15 @@ SUBDIRS = lib man src regress examples
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libzip.pc
 EXTRA_DIST = API-CHANGES \
-		LICENSE \
 		CMakeLists.txt \
+		LICENSE \
+		NEWS.md \
+		README.md \
+		TODO.md \
 		cmake-config.h.in \
 		cmake-zipconf.h.in \
-		libzip.pc.in \
 		libzip-uninstalled.pc.in \
+		libzip.pc.in \
 		m4
 
 all: config.h

@@ -1,5 +1,5 @@
 AC_PREREQ([2.60])
-AC_INIT([libzip],[1.1.2],[libzip@nih.at])
+AC_INIT([libzip],[1.1.3],[libzip@nih.at])
 AC_CONFIG_SRCDIR([lib/zip_add.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -65,6 +65,13 @@ if test "x$ac_cv_libc_defines___progname" = "xyes" ; then
     AC_DEFINE([HAVE___PROGNAME], [1], [Define if libc defines __progname])
 fi
 
+AC_CACHE_CHECK([whether we are building for a Win32 host], [ac_cv_win32_host],
+	       AC_COMPILE_IFELSE([AC_LANG_SOURCE([[#ifdef _WIN32
+ choke me
+ #endif
+ ]])],
+ [ac_cv_win32_host=no], [ac_cv_win32_host=yes]))
+AM_CONDITIONAL([WIN32_HOST], [test "x$ac_cv_win32_host" = "xyes"])
 
 AC_CHECK_HEADERS([fts.h stdbool.h strings.h unistd.h])
 
